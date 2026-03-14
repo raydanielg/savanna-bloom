@@ -87,7 +87,7 @@ const KilimanjaroRoute = () => {
         <div className="hero-gradient absolute inset-0" />
         <div className="relative h-full flex items-end pb-12 safari-container">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-hero font-serif text-primary-foreground mb-2">{routeData[slug || ""] ? route.name : displayName}</h1>
+            <h1 className="text-hero font-serif text-primary-foreground mb-2">{displayName}</h1>
             <div className="flex flex-wrap gap-3 mt-3">
               <span className="badge-meta bg-primary-foreground/20 text-primary-foreground"><Clock className="w-3 h-3" /> {route.days} Days</span>
               <span className="badge-meta bg-primary-foreground/20 text-primary-foreground"><TrendingUp className="w-3 h-3" /> {route.difficulty}</span>
