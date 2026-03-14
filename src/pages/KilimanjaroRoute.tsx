@@ -203,7 +203,7 @@ const KilimanjaroRoute = () => {
         </div>
       </section>
 
-      <InquiryModal isOpen={inquiryOpen} onClose={() => setInquiryOpen(false)} defaultTour={`${routeData[slug || ""] ? route.name : displayName} (${route.days} Days)`} />
+      <InquiryModal isOpen={inquiryOpen} onClose={() => setInquiryOpen(false)} defaultTour={`${displayName} (${route.days} Days)`} />
     </Layout>
   );
 };
