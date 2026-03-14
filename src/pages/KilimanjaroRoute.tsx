@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mountain, Clock, TrendingUp, MapPin, Check, X as XIcon, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import Layout from "@/components/layout/Layout";
