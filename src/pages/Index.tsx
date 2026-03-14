@@ -16,7 +16,7 @@ import lakeManyara from "@/assets/lake-manyara.jpg";
 import wildlifeLion from "@/assets/wildlife-lion.jpg";
 import safariVehicle from "@/assets/safari-vehicle.jpg";
 
-import { fadeInUp, easeOutQuint } from "@/lib/animations";
+import { fadeInUp, staggerDelay, easeOutQuint } from "@/lib/animations";
 
 const destinations = [
   { name: "Serengeti", image: serengeti, tours: 12, href: "/serengeti-safari" },
