@@ -71,13 +71,13 @@ const defaultRoute: RouteData = {
 };
 
 const KilimanjaroRoute = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const route = (slug && routeData[slug]) || defaultRoute;
+  const location = useLocation();
+  const slug = location.pathname.replace("/", "");
+  const route = routeData[slug] || defaultRoute;
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [expandedDay, setExpandedDay] = useState<number | null>(0);
 
-  // Update name for display routes
-  const displayName = slug ? slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : route.name;
+  const displayName = routeData[slug] ? route.name : slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
   return (
     <Layout>
