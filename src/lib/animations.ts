@@ -1,8 +1,6 @@
-import type { Transition } from "framer-motion";
+export const easeOutQuint = [0.23, 1, 0.32, 1] as [number, number, number, number];
 
-export const easeOutQuint: [number, number, number, number] = [0.23, 1, 0.32, 1];
-
-export const transition: Transition = { duration: 0.6, ease: easeOutQuint };
+export const transition = { duration: 0.6, ease: easeOutQuint };
 
 export const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -11,8 +9,8 @@ export const fadeInUp = {
   transition,
 };
 
-export const staggerDelay = (i: number): Transition => ({
+export const staggerDelay = (i: number, multiplier = 0.1) => ({
   duration: 0.6,
   ease: easeOutQuint,
-  delay: i * 0.1,
+  delay: i * multiplier,
 });
