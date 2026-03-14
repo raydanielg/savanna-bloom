@@ -5,12 +5,7 @@ import heroSafari from "@/assets/hero-safari.jpg";
 import safariVehicle from "@/assets/safari-vehicle.jpg";
 import kiliClimbing from "@/assets/kilimanjaro-climbing.jpg";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
-};
+import { fadeInUp, staggerDelay } from "@/lib/animations";
 
 const team = [
   { name: "Joseph Moshi", role: "Founder & Lead Guide", exp: "20+ years on Kilimanjaro" },

@@ -3,12 +3,7 @@ import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Clock, MessageCircle, ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
-};
+import { fadeInUp, staggerDelay } from "@/lib/animations";
 
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });

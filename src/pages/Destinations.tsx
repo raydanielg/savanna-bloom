@@ -11,12 +11,7 @@ import zanzibar from "@/assets/zanzibar.jpg";
 import tarangire from "@/assets/tarangire.jpg";
 import lakeManyara from "@/assets/lake-manyara.jpg";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
-};
+import { fadeInUp, staggerDelay } from "@/lib/animations";
 
 const destinations = [
   { name: "Serengeti National Park", desc: "Home to the Great Migration and unrivaled wildlife density.", image: serengeti, tours: 12, href: "/serengeti-safari" },

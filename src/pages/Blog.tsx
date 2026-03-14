@@ -7,12 +7,7 @@ import kiliClimbing from "@/assets/kilimanjaro-climbing.jpg";
 import zanzibar from "@/assets/zanzibar.jpg";
 import heroSafari from "@/assets/hero-safari.jpg";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
-};
+import { fadeInUp, staggerDelay } from "@/lib/animations";
 
 const posts = [
   { title: "Best Time to Visit Tanzania for Safari", excerpt: "Planning your Tanzania trip? Here's a month-by-month guide to the best wildlife viewing, weather, and crowd levels.", image: serengeti, date: "Mar 10, 2024", readTime: "8 min", slug: "best-time-visit-tanzania" },

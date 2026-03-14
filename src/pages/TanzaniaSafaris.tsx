@@ -11,12 +11,7 @@ import zanzibar from "@/assets/zanzibar.jpg";
 import lakeManyara from "@/assets/lake-manyara.jpg";
 import wildlifeLion from "@/assets/wildlife-lion.jpg";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
-};
+import { fadeInUp, staggerDelay } from "@/lib/animations";
 
 const safaris = [
   { name: "Serengeti Great Migration Safari", days: "5 Days", price: "From $2,400", image: serengeti, wildlife: ["Lions", "Wildebeest", "Zebras", "Cheetahs"], href: "/serengeti-safari" },

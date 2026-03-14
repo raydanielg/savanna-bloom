@@ -67,7 +67,7 @@ const Index = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.2 }}
+            transition={{ duration: 0.8, ease: easeOutQuint, delay: 0.2 }}
             className="max-w-3xl"
           >
             <p className="badge-meta bg-accent/20 text-accent mb-4">Tanzania's Premier Safari Company</p>

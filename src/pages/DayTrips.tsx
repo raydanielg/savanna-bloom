@@ -8,12 +8,7 @@ import ngorongoro from "@/assets/ngorongoro.jpg";
 import lakeManyara from "@/assets/lake-manyara.jpg";
 import tarangire from "@/assets/tarangire.jpg";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
-};
+import { fadeInUp, staggerDelay } from "@/lib/animations";
 
 const dayTrips = [
   { name: "Materuni Waterfall & Coffee Tour", duration: "Full Day", price: "From $120", desc: "Visit the stunning Materuni Waterfall and experience traditional Chagga coffee culture at the foothills of Kilimanjaro.", image: ngorongoro, href: "/materuni-waterfall" },
