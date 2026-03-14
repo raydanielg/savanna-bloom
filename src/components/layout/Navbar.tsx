@@ -99,7 +99,7 @@ const Navbar = () => {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 8 }}
-                      transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                      transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] as const }}
                       className="absolute top-full left-0 w-56 bg-card/95 backdrop-blur-xl rounded-xl shadow-lg border border-border/50 py-2 mt-1"
                     >
                       {link.children.map((child) => (
