@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, Users, MapPin, User, Mail, Phone, MessageSquare, ChevronRight, ChevronLeft, Check } from "lucide-react";
+import { X, Calendar, Users, MapPin, User, Mail, Phone, MessageSquare, ChevronRight, ChevronLeft, Check, Mountain, Tent } from "lucide-react";
 
 interface InquiryModalProps {
   isOpen: boolean;
@@ -23,7 +23,12 @@ const tours = [
   "Custom Safari",
 ];
 
-const accommodations = ["Budget Camping", "Standard Lodge", "Luxury Lodge", "Premium Tented Camp"];
+const accommodations = [
+  { name: "Budget Camping", desc: "Basic tents, shared facilities", icon: Tent },
+  { name: "Standard Lodge", desc: "Comfortable rooms with meals", icon: Tent },
+  { name: "Luxury Lodge", desc: "Premium lodges & tented camps", icon: Tent },
+  { name: "Premium Tented Camp", desc: "Five-star bush luxury", icon: Tent },
+];
 
 const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
   const [step, setStep] = useState(0);
@@ -73,7 +78,7 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-foreground/40 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-foreground/50 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
@@ -81,13 +86,13 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={transition}
-            className="relative w-full max-w-lg bg-card rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg bg-card rounded-3xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Progress */}
-            <div className="h-1 bg-muted">
+            <div className="h-1.5 bg-muted">
               <motion.div
-                className="h-full bg-accent"
+                className="h-full bg-gradient-to-r from-accent to-primary rounded-full"
                 initial={{ width: "0%" }}
                 animate={{ width: `${((step + 1) / steps.length) * 100}%` }}
                 transition={transition}
@@ -95,51 +100,51 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-3">
-              <h3 className="font-serif text-xl text-foreground">
-                {submitted ? "Inquiry Sent" : "Begin Your Expedition"}
-              </h3>
-              <button onClick={reset} className="text-muted-foreground hover:text-foreground transition-colors">
+            <div className="flex items-center justify-between px-8 pt-6 pb-2">
+              <div>
+                <h3 className="font-serif text-2xl text-foreground">
+                  {submitted ? "Inquiry Sent!" : "Begin Your Expedition"}
+                </h3>
+                {!submitted && (
+                  <p className="text-xs text-muted-foreground mt-1">Step {step + 1} of {steps.length}</p>
+                )}
+              </div>
+              <button onClick={reset} className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Steps indicator */}
             {!submitted && (
-              <div className="flex gap-2 px-6 pb-4">
+              <div className="flex gap-1.5 px-8 pb-4 pt-2">
                 {steps.map((s, i) => (
-                  <div key={s} className="flex items-center gap-2">
-                    <span className={`text-xs font-medium ${i <= step ? "text-accent" : "text-muted-foreground"}`}>
-                      {s}
-                    </span>
-                    {i < steps.length - 1 && <ChevronRight className="w-3 h-3 text-muted-foreground/50" />}
-                  </div>
+                  <div key={s} className={`h-1 flex-1 rounded-full transition-colors ${i <= step ? "bg-accent" : "bg-muted"}`} />
                 ))}
               </div>
             )}
 
             {/* Content */}
-            <div className="px-6 pb-6 min-h-[280px]">
+            <div className="px-8 pb-6 min-h-[300px]">
               <AnimatePresence mode="wait">
                 {submitted ? (
                   <motion.div key="success" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center py-8">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                      <Check className="w-8 h-8 text-primary" />
+                    <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-5">
+                      <Check className="w-10 h-10 text-accent" />
                     </div>
-                    <h4 className="font-serif text-2xl mb-2 text-foreground">Thank You!</h4>
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+                    <h4 className="font-serif text-3xl mb-3 text-foreground">Thank You!</h4>
+                    <p className="text-muted-foreground leading-relaxed mb-8">
                       Our expedition team will review your inquiry and get back to you within 24 hours with a personalized itinerary.
                     </p>
-                    <div className="text-left bg-muted/50 rounded-xl p-4 space-y-2">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">What happens next</p>
+                    <div className="text-left bg-secondary/50 rounded-2xl p-6 space-y-3">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-[0.2em]">What happens next</p>
                       {["We review your travel preferences", "A personal travel advisor contacts you", "Receive your custom itinerary & quote"].map((t, i) => (
                         <div key={i} className="flex items-center gap-3 text-sm text-foreground">
-                          <span className="w-6 h-6 rounded-full bg-accent/20 text-accent text-xs flex items-center justify-center font-medium">{i + 1}</span>
+                          <span className="w-7 h-7 rounded-full bg-accent/15 text-accent text-xs flex items-center justify-center font-bold">{i + 1}</span>
                           {t}
                         </div>
                       ))}
                     </div>
-                    <button onClick={reset} className="mt-6 px-8 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
+                    <button onClick={reset} className="mt-8 px-8 py-3.5 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
                       Close
                     </button>
                   </motion.div>
@@ -147,11 +152,12 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
                   <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={transition}>
                     {step === 0 && (
                       <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-3"><MapPin className="w-4 h-4" /> Select Your Tour</label>
-                        <div className="grid gap-2 max-h-[240px] overflow-y-auto pr-2">
+                        <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-4"><MapPin className="w-4 h-4 text-accent" /> Which adventure interests you?</label>
+                        <div className="grid gap-2 max-h-[260px] overflow-y-auto pr-2">
                           {tours.map((tour) => (
                             <button key={tour} onClick={() => update("tour", tour)}
-                              className={`text-left px-4 py-3 rounded-xl text-sm transition-all ${form.tour === tour ? "bg-primary text-primary-foreground" : "bg-muted/50 text-foreground hover:bg-muted"}`}>
+                              className={`text-left px-5 py-3.5 rounded-xl text-sm transition-all flex items-center gap-3 ${form.tour === tour ? "bg-primary text-primary-foreground ring-2 ring-primary" : "bg-secondary/50 text-foreground hover:bg-secondary"}`}>
+                              <Mountain className={`w-4 h-4 flex-shrink-0 ${form.tour === tour ? "text-primary-foreground" : "text-muted-foreground"}`} />
                               {tour}
                             </button>
                           ))}
@@ -160,18 +166,19 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
                     )}
                     {step === 1 && (
                       <div className="space-y-4">
-                        <label className="flex items-center gap-2 text-sm font-medium text-foreground"><Calendar className="w-4 h-4" /> Preferred Travel Date</label>
+                        <label className="flex items-center gap-2 text-sm font-medium text-foreground"><Calendar className="w-4 h-4 text-accent" /> When would you like to travel?</label>
                         <input type="date" value={form.date} onChange={(e) => update("date", e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl bg-muted/50 border-0 text-foreground text-sm outline-none focus:ring-2 focus:ring-accent" />
+                          className="w-full px-5 py-4 rounded-xl bg-secondary/50 border-0 text-foreground outline-none focus:ring-2 focus:ring-accent transition-shadow" />
+                        <p className="text-xs text-muted-foreground">Best seasons: January-March and June-October</p>
                       </div>
                     )}
                     {step === 2 && (
                       <div className="space-y-4">
-                        <label className="flex items-center gap-2 text-sm font-medium text-foreground"><Users className="w-4 h-4" /> Number of Travelers</label>
-                        <div className="grid grid-cols-4 gap-2">
+                        <label className="flex items-center gap-2 text-sm font-medium text-foreground"><Users className="w-4 h-4 text-accent" /> How many travelers?</label>
+                        <div className="grid grid-cols-4 gap-3">
                           {["1", "2", "3-4", "5+"].map((n) => (
                             <button key={n} onClick={() => update("travelers", n)}
-                              className={`py-3 rounded-xl text-sm font-medium transition-all ${form.travelers === n ? "bg-primary text-primary-foreground" : "bg-muted/50 text-foreground hover:bg-muted"}`}>
+                              className={`py-4 rounded-xl text-sm font-medium transition-all ${form.travelers === n ? "bg-primary text-primary-foreground ring-2 ring-primary" : "bg-secondary/50 text-foreground hover:bg-secondary"}`}>
                               {n}
                             </button>
                           ))}
@@ -179,41 +186,44 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
                       </div>
                     )}
                     {step === 3 && (
-                      <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-3">Accommodation Preference</label>
+                      <div className="space-y-3">
+                        <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-3"><Tent className="w-4 h-4 text-accent" /> Accommodation preference</label>
                         {accommodations.map((acc) => (
-                          <button key={acc} onClick={() => update("accommodation", acc)}
-                            className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all ${form.accommodation === acc ? "bg-primary text-primary-foreground" : "bg-muted/50 text-foreground hover:bg-muted"}`}>
-                            {acc}
+                          <button key={acc.name} onClick={() => update("accommodation", acc.name)}
+                            className={`w-full text-left px-5 py-4 rounded-xl transition-all flex items-center gap-4 ${form.accommodation === acc.name ? "bg-primary text-primary-foreground ring-2 ring-primary" : "bg-secondary/50 text-foreground hover:bg-secondary"}`}>
+                            <div>
+                              <p className="text-sm font-medium">{acc.name}</p>
+                              <p className={`text-xs mt-0.5 ${form.accommodation === acc.name ? "text-primary-foreground/70" : "text-muted-foreground"}`}>{acc.desc}</p>
+                            </div>
                           </button>
                         ))}
                       </div>
                     )}
                     {step === 4 && (
-                      <div className="space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1"><User className="w-3 h-3" /> Name *</label>
-                            <input value={form.name} onChange={(e) => update("name", e.target.value)} className="w-full px-3 py-2.5 rounded-xl bg-muted/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent" />
+                            <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-2"><User className="w-3 h-3" /> Full Name *</label>
+                            <input value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="John Smith" className="w-full px-4 py-3 rounded-xl bg-secondary/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent transition-shadow" />
                           </div>
                           <div>
-                            <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1"><Mail className="w-3 h-3" /> Email *</label>
-                            <input type="email" value={form.email} onChange={(e) => update("email", e.target.value)} className="w-full px-3 py-2.5 rounded-xl bg-muted/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent" />
+                            <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-2"><Mail className="w-3 h-3" /> Email *</label>
+                            <input type="email" value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="you@email.com" className="w-full px-4 py-3 rounded-xl bg-secondary/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent transition-shadow" />
                           </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1"><Phone className="w-3 h-3" /> Phone</label>
-                            <input value={form.phone} onChange={(e) => update("phone", e.target.value)} className="w-full px-3 py-2.5 rounded-xl bg-muted/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent" />
+                            <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-2"><Phone className="w-3 h-3" /> Phone</label>
+                            <input value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+1 234 567 890" className="w-full px-4 py-3 rounded-xl bg-secondary/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent transition-shadow" />
                           </div>
                           <div>
-                            <label className="text-xs font-medium text-muted-foreground mb-1 block">Country</label>
-                            <input value={form.country} onChange={(e) => update("country", e.target.value)} className="w-full px-3 py-2.5 rounded-xl bg-muted/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent" />
+                            <label className="text-xs font-medium text-muted-foreground mb-2 block">Country</label>
+                            <input value={form.country} onChange={(e) => update("country", e.target.value)} placeholder="United States" className="w-full px-4 py-3 rounded-xl bg-secondary/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent transition-shadow" />
                           </div>
                         </div>
                         <div>
-                          <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1"><MessageSquare className="w-3 h-3" /> Message</label>
-                          <textarea rows={3} value={form.message} onChange={(e) => update("message", e.target.value)} className="w-full px-3 py-2.5 rounded-xl bg-muted/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent resize-none" />
+                          <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-2"><MessageSquare className="w-3 h-3" /> Special requests</label>
+                          <textarea rows={3} value={form.message} onChange={(e) => update("message", e.target.value)} placeholder="Tell us about your dream trip..." className="w-full px-4 py-3 rounded-xl bg-secondary/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent resize-none transition-shadow" />
                         </div>
                       </div>
                     )}
@@ -224,19 +234,19 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
 
             {/* Actions */}
             {!submitted && (
-              <div className="flex items-center justify-between px-6 pb-6">
+              <div className="flex items-center justify-between px-8 pb-8">
                 <button onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}
-                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors py-2">
                   <ChevronLeft className="w-4 h-4" /> Back
                 </button>
                 {step < steps.length - 1 ? (
                   <button onClick={() => setStep(step + 1)} disabled={!canNext()}
-                    className="flex items-center gap-1 px-6 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-all">
-                    Next <ChevronRight className="w-4 h-4" />
+                    className="flex items-center gap-1.5 px-7 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-all">
+                    Continue <ChevronRight className="w-4 h-4" />
                   </button>
                 ) : (
                   <button onClick={handleSubmit} disabled={!canNext()}
-                    className="px-6 py-2.5 bg-accent text-accent-foreground rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-all">
+                    className="px-7 py-3 bg-accent text-accent-foreground rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-all">
                     Submit Inquiry
                   </button>
                 )}

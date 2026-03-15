@@ -70,7 +70,7 @@
   }
 
   .section-padding {
-    @apply py-16 md:py-24 lg:py-32;
+    @apply py-20 md:py-28 lg:py-36;
   }
 
   .glass-nav {
@@ -78,21 +78,34 @@
   }
 
   .card-shadow {
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05), 0 12px 24px -12px rgba(0,0,0,0.1);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.04), 0 4px 6px rgba(0,0,0,0.04), 0 20px 40px -16px rgba(0,0,0,0.08);
+  }
+
+  .card-shadow-lg {
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.04), 0 8px 16px rgba(0,0,0,0.06), 0 32px 64px -16px rgba(0,0,0,0.12);
   }
 
   .hero-gradient {
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.05) 100%);
+  }
+
+  .hero-gradient-strong {
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 100%);
   }
 
   .text-hero {
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    line-height: 1.05;
+    font-size: clamp(2.75rem, 8vw, 5.5rem);
+    line-height: 1.02;
   }
 
   .text-section {
-    font-size: clamp(2rem, 5vw, 3rem);
-    line-height: 1.1;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.08;
+  }
+
+  .text-subsection {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.15;
   }
 
   .route-card {
@@ -105,21 +118,38 @@
   }
 
   .route-card:hover img {
-    transform: scale(1.05);
+    transform: scale(1.06);
   }
 
   .route-card .card-content {
-    @apply absolute bottom-0 left-0 right-0 p-6 transition-transform duration-500;
+    @apply absolute bottom-0 left-0 right-0 p-6 md:p-8 transition-transform duration-500;
     transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   .route-card:hover .card-content {
-    transform: translateY(-8px);
+    transform: translateY(-6px);
   }
 
   .badge-meta {
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium tracking-widest uppercase;
     font-variant-numeric: tabular-nums;
+  }
+
+  .luxury-divider {
+    @apply w-16 h-px bg-accent mx-auto;
+  }
+
+  .image-reveal {
+    @apply overflow-hidden rounded-2xl;
+  }
+
+  .image-reveal img {
+    @apply transition-transform duration-1000;
+    transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .image-reveal:hover img {
+    transform: scale(1.04);
   }
 }
 
