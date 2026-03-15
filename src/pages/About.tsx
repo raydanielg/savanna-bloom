@@ -4,56 +4,72 @@ import Layout from "@/components/layout/Layout";
 import heroSafari from "@/assets/hero-safari.jpg";
 import safariVehicle from "@/assets/safari-vehicle.jpg";
 import kiliClimbing from "@/assets/kilimanjaro-climbing.jpg";
+import luxuryCamp from "@/assets/luxury-camp.jpg";
+import elephant from "@/assets/elephant.jpg";
 
-import { fadeInUp, staggerDelay } from "@/lib/animations";
+import { fadeInUp } from "@/lib/animations";
 
 const team = [
-  { name: "Joseph Moshi", role: "Founder & Lead Guide", exp: "20+ years on Kilimanjaro" },
-  { name: "Grace Kimaro", role: "Safari Director", exp: "15 years wildlife expertise" },
-  { name: "David Mwakalinga", role: "Operations Manager", exp: "Ensuring flawless logistics" },
-  { name: "Amina Hassan", role: "Guest Relations", exp: "Your personal travel advisor" },
+  { name: "Joseph Moshi", role: "Founder & Lead Guide", exp: "20+ years on Kilimanjaro", initials: "JM" },
+  { name: "Grace Kimaro", role: "Safari Director", exp: "15 years wildlife expertise", initials: "GK" },
+  { name: "David Mwakalinga", role: "Operations Manager", exp: "Ensuring flawless logistics", initials: "DM" },
+  { name: "Amina Hassan", role: "Guest Relations", exp: "Your personal travel advisor", initials: "AH" },
 ];
 
 const About = () => {
   return (
     <Layout>
-      <section className="relative h-[50vh] min-h-[400px] -mt-24">
+      <section className="relative h-[60vh] min-h-[450px] -mt-24">
         <img src={heroSafari} alt="African landscape" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="hero-gradient absolute inset-0" />
-        <div className="relative h-full flex items-end pb-12 safari-container">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-hero font-serif text-primary-foreground">About Us</h1>
-            <p className="text-lg text-primary-foreground/80 max-w-xl mt-2">Crafting unforgettable African adventures since 2008.</p>
+        <div className="hero-gradient-strong absolute inset-0" />
+        <div className="relative h-full flex items-end pb-16 safari-container">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <h1 className="text-hero font-serif text-primary-foreground">Our Story</h1>
+            <p className="text-lg text-primary-foreground/80 max-w-xl mt-3">Crafting unforgettable African adventures since 2008.</p>
           </motion.div>
         </div>
       </section>
 
       {/* Story */}
       <section className="section-padding bg-background">
-        <div className="safari-container grid lg:grid-cols-2 gap-12 items-center">
+        <div className="safari-container grid lg:grid-cols-2 gap-16 items-center">
           <motion.div {...fadeInUp}>
-            <h2 className="text-section font-serif text-foreground mb-4">Our Story</h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
+            <p className="badge-meta bg-accent/10 text-accent mb-4">About Us</p>
+            <h2 className="text-section font-serif text-foreground mb-5">Born from a Love for the Wild</h2>
+            <p className="text-muted-foreground leading-relaxed text-lg mb-5">
               Founded by local Tanzanian mountain guides, Africa Safari & Expeditions was born from a deep love for the African wilderness and a commitment to sharing it responsibly with the world.
             </p>
-            <p className="text-muted-foreground leading-relaxed mb-4">
+            <p className="text-muted-foreground leading-relaxed text-lg mb-5">
               Over 15 years, we've guided more than 10,000 travelers to the summit of Kilimanjaro and across the Serengeti, earning a reputation for safety, expertise, and unforgettable experiences.
             </p>
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed text-lg">
               Every expedition is led by certified local guides who know these mountains and plains intimately — because this is their home.
             </p>
           </motion.div>
           <motion.div {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.2 }}>
-            <img src={kiliClimbing} alt="Our team on Kilimanjaro" className="rounded-2xl w-full" loading="lazy" />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="image-reveal rounded-2xl aspect-[3/4]">
+                <img src={kiliClimbing} alt="Our team on Kilimanjaro" className="w-full h-full object-cover" loading="lazy" />
+              </div>
+              <div className="space-y-4 pt-8">
+                <div className="image-reveal rounded-2xl aspect-square">
+                  <img src={elephant} alt="Elephant encounter" className="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <div className="image-reveal rounded-2xl aspect-[4/3]">
+                  <img src={luxuryCamp} alt="Luxury camp" className="w-full h-full object-cover" loading="lazy" />
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Values */}
-      <section className="section-padding bg-secondary/50">
+      <section className="section-padding bg-secondary/40">
         <div className="safari-container">
-          <motion.div {...fadeInUp} className="text-center mb-12">
+          <motion.div {...fadeInUp} className="text-center mb-16">
             <h2 className="text-section font-serif text-foreground">Why Travelers Trust Us</h2>
+            <div className="w-16 h-px bg-accent mx-auto mt-5" />
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -64,13 +80,13 @@ const About = () => {
               { icon: Users, title: "Small Groups", desc: "Personalized attention with maximum 12 travelers per group." },
               { icon: Globe, title: "Global Recognition", desc: "TripAdvisor Travelers' Choice and Safari Bookings certified." },
             ].map((item, i) => (
-              <motion.div key={item.title} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.1 }}
-                className="bg-card rounded-2xl p-6 card-shadow text-center">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-5 h-5 text-accent" />
+              <motion.div key={item.title} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.08 }}
+                className="bg-card rounded-2xl p-8 card-shadow text-center group hover:card-shadow-lg transition-shadow">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-accent/20 transition-colors">
+                  <item.icon className="w-6 h-6 text-accent" />
                 </div>
-                <h3 className="font-serif text-lg mb-2 text-foreground">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.desc}</p>
+                <h3 className="font-serif text-xl mb-3 text-foreground">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -80,19 +96,20 @@ const About = () => {
       {/* Team */}
       <section className="section-padding bg-background">
         <div className="safari-container">
-          <motion.div {...fadeInUp} className="text-center mb-12">
-            <h2 className="text-section font-serif text-foreground">Our Team</h2>
+          <motion.div {...fadeInUp} className="text-center mb-16">
+            <h2 className="text-section font-serif text-foreground">Meet Our Team</h2>
+            <div className="w-16 h-px bg-accent mx-auto mt-5" />
           </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {team.map((member, i) => (
               <motion.div key={member.name} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.1 }}
-                className="bg-card rounded-2xl p-6 card-shadow text-center">
-                <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-muted-foreground" />
+                className="bg-card rounded-2xl p-8 card-shadow text-center group hover:card-shadow-lg transition-shadow">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center mx-auto mb-5">
+                  <span className="font-serif text-2xl text-primary">{member.initials}</span>
                 </div>
-                <h3 className="font-medium text-foreground">{member.name}</h3>
-                <p className="text-sm text-accent mt-1">{member.role}</p>
-                <p className="text-xs text-muted-foreground mt-2">{member.exp}</p>
+                <h3 className="font-medium text-foreground text-lg">{member.name}</h3>
+                <p className="text-sm text-accent mt-1 font-medium">{member.role}</p>
+                <p className="text-xs text-muted-foreground mt-3">{member.exp}</p>
               </motion.div>
             ))}
           </div>
@@ -100,21 +117,26 @@ const About = () => {
       </section>
 
       {/* Vehicles */}
-      <section className="section-padding bg-secondary/50">
-        <div className="safari-container grid lg:grid-cols-2 gap-12 items-center">
+      <section className="section-padding bg-secondary/40">
+        <div className="safari-container grid lg:grid-cols-2 gap-16 items-center">
           <motion.div {...fadeInUp}>
-            <img src={safariVehicle} alt="Safari vehicle" className="rounded-2xl w-full" loading="lazy" />
+            <div className="image-reveal rounded-3xl overflow-hidden">
+              <img src={safariVehicle} alt="Safari vehicle" className="w-full h-auto object-cover" loading="lazy" />
+            </div>
           </motion.div>
           <motion.div {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.2 }}>
-            <h2 className="text-section font-serif text-foreground mb-4">Our Safari Vehicles</h2>
-            <p className="text-muted-foreground leading-relaxed mb-6">
+            <p className="badge-meta bg-accent/10 text-accent mb-4">Our Fleet</p>
+            <h2 className="text-section font-serif text-foreground mb-5">Premium Safari Vehicles</h2>
+            <p className="text-muted-foreground leading-relaxed text-lg mb-8">
               Our fleet of custom 4x4 Toyota Land Cruisers are specially modified for the ultimate safari experience with pop-up roofs, charging ports, and refrigeration.
             </p>
-            <ul className="space-y-3">
-              {["Pop-up roof for 360° game viewing", "Maximum 6 guests per vehicle", "Two-way radio and GPS", "First aid and emergency equipment"].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-foreground">
-                  <div className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
-                  {item}
+            <ul className="space-y-4">
+              {["Pop-up roof for 360° game viewing", "Maximum 6 guests per vehicle", "Two-way radio and GPS navigation", "First aid and emergency equipment"].map((item) => (
+                <li key={item} className="flex items-center gap-4 text-foreground">
+                  <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-2 h-2 rounded-full bg-accent" />
+                  </div>
+                  <span className="text-sm">{item}</span>
                 </li>
               ))}
             </ul>
