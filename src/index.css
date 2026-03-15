@@ -96,7 +96,7 @@
   }
 
   .route-card {
-    @apply relative overflow-hidden rounded-2xl cursor-pointer group;
+    @apply relative overflow-hidden rounded-2xl cursor-pointer;
   }
 
   .route-card img {
