@@ -7,6 +7,7 @@ import Index from "./pages/Index.tsx";
 import Kilimanjaro from "./pages/Kilimanjaro.tsx";
 import KilimanjaroRoute from "./pages/KilimanjaroRoute.tsx";
 import TanzaniaSafaris from "./pages/TanzaniaSafaris.tsx";
+import SafariDetail from "./pages/SafariDetail.tsx";
 import Destinations from "./pages/Destinations.tsx";
 import DayTrips from "./pages/DayTrips.tsx";
 import About from "./pages/About.tsx";
@@ -32,11 +33,11 @@ const App = () => (
           <Route path="/rongai-route" element={<KilimanjaroRoute />} />
           <Route path="/northern-circuit" element={<KilimanjaroRoute />} />
           <Route path="/tanzania-safaris" element={<TanzaniaSafaris />} />
-          <Route path="/serengeti-safari" element={<TanzaniaSafaris />} />
-          <Route path="/ngorongoro-safari" element={<TanzaniaSafaris />} />
-          <Route path="/tarangire-safari" element={<TanzaniaSafaris />} />
-          <Route path="/lake-manyara-safari" element={<TanzaniaSafaris />} />
-          <Route path="/zanzibar-tour" element={<TanzaniaSafaris />} />
+          <Route path="/serengeti-safari" element={<SafariDetail />} />
+          <Route path="/ngorongoro-safari" element={<SafariDetail />} />
+          <Route path="/tarangire-safari" element={<SafariDetail />} />
+          <Route path="/lake-manyara-safari" element={<SafariDetail />} />
+          <Route path="/zanzibar-tour" element={<SafariDetail />} />
           <Route path="/destinations" element={<Destinations />} />
           <Route path="/day-trips" element={<DayTrips />} />
           <Route path="/materuni-waterfall" element={<DayTrips />} />

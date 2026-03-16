@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Star, Shield, Users, Award, Mountain, Compass, Clock, ChevronRight, Binoculars, Tent, Quote } from "lucide-react";
+import { ArrowRight, Star, Shield, Users, Award, Mountain, Compass, Clock, ChevronRight, Binoculars, Tent, Quote, Play } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import InquiryModal from "@/components/InquiryModal";
+import { ScrollReveal, StaggerContainer, StaggerItem, ParallaxImage } from "@/hooks/useScrollAnimation";
 
 import heroSafari from "@/assets/hero-safari.jpg";
 import kiliHero from "@/assets/kilimanjaro-hero.jpg";
@@ -21,15 +22,19 @@ import elephant from "@/assets/elephant.jpg";
 import kiliSummit from "@/assets/kili-summit.jpg";
 import leopard from "@/assets/leopard.jpg";
 import zanzibarBeach from "@/assets/zanzibar-beach.jpg";
+import serengetiSunset from "@/assets/serengeti-sunset.jpg";
+import luxuryLodge from "@/assets/luxury-lodge.jpg";
+import tarangireElephants from "@/assets/tarangire-elephants.jpg";
+import zanzibarParadise from "@/assets/zanzibar-paradise.jpg";
 
-import { fadeInUp, easeOutQuint } from "@/lib/animations";
+import { easeOutQuint } from "@/lib/animations";
 
 const destinations = [
   { name: "Serengeti", subtitle: "Great Migration", image: serengeti, tours: 12, href: "/serengeti-safari" },
   { name: "Ngorongoro", subtitle: "The Eighth Wonder", image: ngorongoro, tours: 8, href: "/ngorongoro-safari" },
   { name: "Kilimanjaro", subtitle: "Roof of Africa", image: kiliSummit, tours: 6, href: "/kilimanjaro" },
-  { name: "Zanzibar", subtitle: "Spice Island Paradise", image: zanzibarBeach, tours: 5, href: "/zanzibar-tour" },
-  { name: "Tarangire", subtitle: "Elephant Kingdom", image: tarangire, tours: 7, href: "/tarangire-safari" },
+  { name: "Zanzibar", subtitle: "Spice Island Paradise", image: zanzibarParadise, tours: 5, href: "/zanzibar-tour" },
+  { name: "Tarangire", subtitle: "Elephant Kingdom", image: tarangireElephants, tours: 7, href: "/tarangire-safari" },
   { name: "Lake Manyara", subtitle: "Tree-Climbing Lions", image: lakeManyara, tours: 4, href: "/lake-manyara-safari" },
 ];
 
@@ -43,8 +48,8 @@ const kiliRoutes = [
 const safaris = [
   { name: "Serengeti Great Migration", days: "5 Days", price: "$2,400", image: migration, href: "/serengeti-safari", desc: "Witness millions of wildebeest cross the Mara River" },
   { name: "Ngorongoro Crater Safari", days: "3 Days", price: "$1,800", image: ngorongoro, href: "/ngorongoro-safari", desc: "Explore the world's largest volcanic caldera" },
-  { name: "Tarangire Elephant Safari", days: "4 Days", price: "$1,600", image: elephant, href: "/tarangire-safari", desc: "Walk among herds of 300+ elephants" },
-  { name: "Zanzibar Beach Escape", days: "5 Days", price: "$1,200", image: zanzibarBeach, href: "/zanzibar-tour", desc: "Pristine beaches and rich Swahili culture" },
+  { name: "Tarangire Elephant Safari", days: "4 Days", price: "$1,600", image: tarangireElephants, href: "/tarangire-safari", desc: "Walk among herds of 300+ elephants" },
+  { name: "Zanzibar Beach Escape", days: "5 Days", price: "$1,200", image: zanzibarParadise, href: "/zanzibar-tour", desc: "Pristine beaches and rich Swahili culture" },
 ];
 
 const testimonials = [
@@ -65,97 +70,116 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* Hero */}
-      <section className="relative h-screen min-h-[700px] -mt-24">
-        <img src={heroSafari} alt="African savannah at golden hour with elephants" className="absolute inset-0 w-full h-full object-cover" />
+      {/* Video Hero — Centered text + buttons */}
+      <section className="relative h-screen min-h-[700px] -mt-24 overflow-hidden">
+        {/* Background video with fallback image */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={heroSafari}
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="https://cdn.coverr.co/videos/coverr-elephants-walking-in-africa-1227/1080p.mp4" type="video/mp4" />
+        </video>
+        <img src={heroSafari} alt="African savannah at golden hour" className="absolute inset-0 w-full h-full object-cover" style={{ zIndex: -1 }} />
         <div className="hero-gradient-strong absolute inset-0" />
-        <div className="relative h-full flex items-end pb-24 md:pb-32 safari-container">
+
+        {/* Centered content */}
+        <div className="relative h-full flex flex-col items-center justify-center text-center safari-container">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: easeOutQuint, delay: 0.3 }}
-            className="max-w-3xl"
+            transition={{ duration: 1.2, ease: easeOutQuint, delay: 0.3 }}
+            className="max-w-4xl"
           >
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: easeOutQuint, delay: 0.5 }}
-              className="badge-meta bg-accent/20 text-accent mb-5"
+              className="badge-meta bg-accent/20 text-accent mx-auto mb-6"
             >
               Tanzania's Premier Safari Company
             </motion.p>
-            <h1 className="text-hero font-serif text-primary-foreground mb-5">
+            <h1 className="text-hero font-serif text-primary-foreground mb-6">
               The Wild<br />is Calling.
             </h1>
-            <p className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-10 max-w-xl">
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+              className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-12 max-w-2xl mx-auto"
+            >
               Kilimanjaro climbs, wildlife safaris, and unforgettable adventures across Tanzania — crafted by local experts who call this land home.
-            </p>
-            <div className="flex flex-wrap gap-4">
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.6 }}
+              className="flex flex-wrap gap-4 justify-center"
+            >
               <button
                 onClick={() => setInquiryOpen(true)}
-                className="px-8 py-4 bg-accent text-accent-foreground rounded-full font-medium transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] text-sm tracking-wide uppercase"
+                className="px-10 py-4 bg-accent text-accent-foreground rounded-full font-medium transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] text-sm tracking-wide uppercase"
               >
                 Plan Your Safari
               </button>
               <Link
                 to="/kilimanjaro"
-                className="px-8 py-4 bg-primary-foreground/10 text-primary-foreground backdrop-blur-sm rounded-full font-medium transition-all hover:bg-primary-foreground/20 border border-primary-foreground/20 text-sm tracking-wide uppercase"
+                className="px-10 py-4 bg-primary-foreground/10 text-primary-foreground backdrop-blur-sm rounded-full font-medium transition-all hover:bg-primary-foreground/20 border border-primary-foreground/20 text-sm tracking-wide uppercase"
               >
                 Climb Kilimanjaro
               </Link>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
+
         {/* Scroll indicator */}
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          transition={{ delay: 1.5 }}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
-          <motion.div 
-            animate={{ y: [0, 8, 0] }} 
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-px h-12 bg-gradient-to-b from-primary-foreground/40 to-transparent"
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-px h-16 bg-gradient-to-b from-primary-foreground/50 to-transparent"
           />
         </motion.div>
       </section>
 
       {/* Stats Bar */}
-      <section className="bg-primary text-primary-foreground py-8">
-        <div className="safari-container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="bg-primary text-primary-foreground py-10">
+        <StaggerContainer className="safari-container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { val: "10,000+", label: "Happy Travelers" },
             { val: "98%", label: "Summit Success" },
             { val: "15+", label: "Years Experience" },
             { val: "500+", label: "5-Star Reviews" },
-          ].map((s, i) => (
-            <motion.div key={s.label} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.1 }}>
+          ].map((s) => (
+            <StaggerItem key={s.label}>
               <p className="text-3xl md:text-4xl font-serif text-accent">{s.val}</p>
               <p className="text-[11px] uppercase tracking-[0.2em] text-primary-foreground/50 mt-2">{s.label}</p>
-            </motion.div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </section>
 
       {/* Destinations — Masonry-style grid */}
       <section className="section-padding bg-background">
         <div className="safari-container">
-          <motion.div {...fadeInUp} className="text-center mb-16">
+          <ScrollReveal className="text-center mb-16">
             <p className="badge-meta bg-accent/10 text-accent mx-auto mb-4">Explore Tanzania</p>
             <h2 className="text-section font-serif text-foreground">Iconic Destinations</h2>
             <div className="luxury-divider mt-5" />
             <p className="text-muted-foreground mt-5 max-w-xl mx-auto text-lg leading-relaxed">From the vast Serengeti plains to the tropical beaches of Zanzibar, discover Tanzania's most legendary destinations.</p>
-          </motion.div>
+          </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {destinations.map((dest, i) => (
-              <motion.div 
-                key={dest.name} 
-                {...fadeInUp} 
-                transition={{ ...fadeInUp.transition, delay: i * 0.08 }}
-                className={i === 0 ? "md:col-span-2 md:row-span-2" : ""}
-              >
+              <StaggerItem key={dest.name} className={i === 0 ? "md:col-span-2 md:row-span-2" : ""}>
                 <Link to={dest.href} className="route-card group block overflow-hidden rounded-2xl" style={{ aspectRatio: i === 0 ? "1" : "4/5" }}>
                   <img src={dest.image} alt={dest.name} className="w-full h-full object-cover" loading="lazy" />
                   <div className="hero-gradient absolute inset-0" />
@@ -168,25 +192,33 @@ const Index = () => {
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
-      {/* Full-width image break */}
-      <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
-        <img src={migration} alt="Wildebeest Great Migration" className="absolute inset-0 w-full h-full object-cover" />
+      {/* Full-width parallax break */}
+      <section className="relative h-[60vh] min-h-[450px] overflow-hidden">
+        <motion.img
+          src={migration}
+          alt="Wildebeest Great Migration"
+          className="absolute inset-0 w-full h-full object-cover"
+          initial={{ scale: 1.15 }}
+          whileInView={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: easeOutQuint }}
+          viewport={{ once: true }}
+        />
         <div className="hero-gradient absolute inset-0" />
         <div className="relative h-full flex items-center justify-center text-center safari-container">
-          <motion.div {...fadeInUp}>
+          <ScrollReveal scale>
             <p className="badge-meta bg-accent/20 text-accent mb-4">The Greatest Show on Earth</p>
             <h2 className="text-section font-serif text-primary-foreground">Witness the Great Migration</h2>
-            <p className="text-primary-foreground/70 mt-3 max-w-lg mx-auto">Over 2 million wildebeest cross the Serengeti in nature's most spectacular annual journey.</p>
-            <Link to="/serengeti-safari" className="inline-flex items-center gap-2 mt-6 text-accent hover:text-primary-foreground transition-colors font-medium text-sm uppercase tracking-wider">
+            <p className="text-primary-foreground/70 mt-4 max-w-lg mx-auto text-lg">Over 2 million wildebeest cross the Serengeti in nature's most spectacular annual journey.</p>
+            <Link to="/serengeti-safari" className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-accent text-accent-foreground rounded-full font-medium text-sm uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02]">
               Explore Safari Packages <ArrowRight className="w-4 h-4" />
             </Link>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -194,7 +226,7 @@ const Index = () => {
       <section className="section-padding bg-secondary/40">
         <div className="safari-container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div {...fadeInUp}>
+            <ScrollReveal direction="left">
               <p className="badge-meta bg-accent/10 text-accent mb-4">
                 <Mountain className="w-3.5 h-3.5" /> Kilimanjaro Climbing
               </p>
@@ -232,8 +264,8 @@ const Index = () => {
               <Link to="/kilimanjaro" className="inline-flex items-center gap-2 text-primary font-medium hover:text-accent transition-colors text-sm uppercase tracking-wider">
                 View All Routes <ArrowRight className="w-4 h-4" />
               </Link>
-            </motion.div>
-            <motion.div {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.2 }}>
+            </ScrollReveal>
+            <ScrollReveal direction="right" delay={0.15}>
               <div className="route-card group aspect-[3/4] rounded-3xl overflow-hidden">
                 <img src={kiliClimbing} alt="Climbers ascending Kilimanjaro" className="w-full h-full object-cover" />
                 <div className="hero-gradient absolute inset-0" />
@@ -246,7 +278,7 @@ const Index = () => {
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -254,16 +286,16 @@ const Index = () => {
       {/* Safari Packages */}
       <section className="section-padding bg-background">
         <div className="safari-container">
-          <motion.div {...fadeInUp} className="text-center mb-16">
+          <ScrollReveal className="text-center mb-16">
             <p className="badge-meta bg-accent/10 text-accent mx-auto mb-4">
               <Binoculars className="w-3.5 h-3.5" /> Wildlife Adventures
             </p>
             <h2 className="text-section font-serif text-foreground">Tanzania Safari Packages</h2>
             <div className="luxury-divider mt-5" />
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-            {safaris.map((safari, i) => (
-              <motion.div key={safari.name} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.1 }}>
+          </ScrollReveal>
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {safaris.map((safari) => (
+              <StaggerItem key={safari.name}>
                 <Link to={safari.href} className="group block bg-card rounded-2xl overflow-hidden card-shadow hover:card-shadow-lg transition-all">
                   <div className="aspect-[16/9] overflow-hidden relative">
                     <img src={safari.image} alt={safari.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
@@ -286,22 +318,22 @@ const Index = () => {
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </StaggerItem>
             ))}
-          </div>
-          <motion.div {...fadeInUp} className="text-center mt-12">
+          </StaggerContainer>
+          <ScrollReveal className="text-center mt-12">
             <Link to="/tanzania-safaris" className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-full font-medium hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98] text-sm tracking-wide uppercase">
               View All Safaris <ArrowRight className="w-4 h-4" />
             </Link>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* Luxury Experience Section */}
+      {/* Luxury Experience Section with parallax images */}
       <section className="section-padding bg-primary text-primary-foreground overflow-hidden">
         <div className="safari-container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div {...fadeInUp}>
+            <ScrollReveal direction="left">
               <p className="badge-meta bg-accent/20 text-accent mb-4">
                 <Tent className="w-3.5 h-3.5" /> Luxury Experience
               </p>
@@ -309,40 +341,42 @@ const Index = () => {
               <p className="text-primary-foreground/70 leading-relaxed text-lg mb-8">
                 After a day exploring the wild, retreat to luxury tented camps with panoramic views, gourmet dining, and personalized service that rivals the finest hotels.
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              <StaggerContainer className="grid grid-cols-2 gap-4">
                 {[
                   { label: "Luxury Camps", value: "Hand-picked lodges" },
                   { label: "Gourmet Dining", value: "Bush cuisine" },
                   { label: "Private Guides", value: "Expert naturalists" },
                   { label: "Custom Journeys", value: "Tailored to you" },
                 ].map((item) => (
-                  <div key={item.label} className="bg-primary-foreground/5 rounded-xl p-4">
-                    <p className="text-accent text-sm font-medium">{item.label}</p>
-                    <p className="text-primary-foreground/60 text-xs mt-1">{item.value}</p>
-                  </div>
+                  <StaggerItem key={item.label}>
+                    <div className="bg-primary-foreground/5 rounded-xl p-4 hover:bg-primary-foreground/10 transition-colors">
+                      <p className="text-accent text-sm font-medium">{item.label}</p>
+                      <p className="text-primary-foreground/60 text-xs mt-1">{item.value}</p>
+                    </div>
+                  </StaggerItem>
                 ))}
-              </div>
-            </motion.div>
-            <motion.div {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.2 }}>
+              </StaggerContainer>
+            </ScrollReveal>
+            <ScrollReveal direction="right" delay={0.15}>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
-                  <div className="image-reveal rounded-2xl aspect-[3/4]">
-                    <img src={luxuryCamp} alt="Luxury safari camp" className="w-full h-full object-cover" loading="lazy" />
+                  <div className="image-reveal rounded-2xl aspect-[3/4] overflow-hidden">
+                    <img src={luxuryLodge} alt="Luxury safari lodge" className="w-full h-full object-cover" loading="lazy" />
                   </div>
-                  <div className="image-reveal rounded-2xl aspect-square">
+                  <div className="image-reveal rounded-2xl aspect-square overflow-hidden">
                     <img src={leopard} alt="Leopard on tree" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 </div>
                 <div className="space-y-4 pt-8">
-                  <div className="image-reveal rounded-2xl aspect-square">
+                  <div className="image-reveal rounded-2xl aspect-square overflow-hidden">
                     <img src={wildlifeLion} alt="Lion in the savannah" className="w-full h-full object-cover" loading="lazy" />
                   </div>
-                  <div className="image-reveal rounded-2xl aspect-[3/4]">
-                    <img src={elephant} alt="Elephant at sunset" className="w-full h-full object-cover" loading="lazy" />
+                  <div className="image-reveal rounded-2xl aspect-[3/4] overflow-hidden">
+                    <img src={serengetiSunset} alt="Sunset safari" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -350,35 +384,34 @@ const Index = () => {
       {/* Why Us */}
       <section className="section-padding bg-background">
         <div className="safari-container">
-          <motion.div {...fadeInUp} className="text-center mb-16">
+          <ScrollReveal className="text-center mb-16">
             <h2 className="text-section font-serif text-foreground">Why Travel With Us</h2>
             <div className="luxury-divider mt-5" />
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {whyUs.map((item, i) => (
-              <motion.div key={item.title} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.1 }}
-                className="text-center group">
+          </ScrollReveal>
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {whyUs.map((item) => (
+              <StaggerItem key={item.title} className="text-center group">
                 <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-accent/20 transition-colors">
                   <item.icon className="w-7 h-7 text-accent" />
                 </div>
                 <h3 className="font-serif text-xl mb-3 text-foreground">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-              </motion.div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
-      {/* Safari Vehicles */}
+      {/* Safari Vehicles with parallax */}
       <section className="section-padding bg-secondary/40">
         <div className="safari-container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div {...fadeInUp}>
+            <ScrollReveal direction="left">
               <div className="image-reveal rounded-3xl overflow-hidden">
                 <img src={safariVehicle} alt="Safari vehicle in the Serengeti" className="w-full h-auto object-cover" loading="lazy" />
               </div>
-            </motion.div>
-            <motion.div {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.2 }}>
+            </ScrollReveal>
+            <ScrollReveal direction="right" delay={0.15}>
               <p className="badge-meta bg-accent/10 text-accent mb-4">Our Fleet</p>
               <h2 className="text-section font-serif text-foreground mb-5">Premium Safari Vehicles</h2>
               <p className="text-muted-foreground leading-relaxed text-lg mb-8">
@@ -394,7 +427,7 @@ const Index = () => {
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -402,15 +435,14 @@ const Index = () => {
       {/* Testimonials */}
       <section className="section-padding bg-background">
         <div className="safari-container">
-          <motion.div {...fadeInUp} className="text-center mb-16">
+          <ScrollReveal className="text-center mb-16">
             <p className="badge-meta bg-accent/10 text-accent mx-auto mb-4">Traveler Reviews</p>
             <h2 className="text-section font-serif text-foreground">What Our Guests Say</h2>
             <div className="luxury-divider mt-5" />
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t, i) => (
-              <motion.div key={t.name} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.1 }}
-                className="bg-card rounded-2xl p-8 card-shadow relative">
+          </ScrollReveal>
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((t) => (
+              <StaggerItem key={t.name} className="bg-card rounded-2xl p-8 card-shadow relative">
                 <Quote className="w-10 h-10 text-accent/15 absolute top-6 right-6" />
                 <div className="flex gap-1 mb-5">
                   {Array.from({ length: t.rating }).map((_, j) => (
@@ -422,32 +454,40 @@ const Index = () => {
                   <p className="font-medium text-foreground">{t.name}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">{t.location} • {t.trip}</p>
                 </div>
-              </motion.div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative py-32 overflow-hidden">
-        <img src={kiliSummit} alt="Kilimanjaro summit at sunrise" className="absolute inset-0 w-full h-full object-cover" />
+      {/* CTA with parallax */}
+      <section className="relative py-36 overflow-hidden">
+        <motion.img
+          src={kiliSummit}
+          alt="Kilimanjaro summit at sunrise"
+          className="absolute inset-0 w-full h-full object-cover"
+          initial={{ scale: 1.15 }}
+          whileInView={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: easeOutQuint }}
+          viewport={{ once: true }}
+        />
         <div className="hero-gradient-strong absolute inset-0" />
         <div className="relative safari-container text-center">
-          <motion.div {...fadeInUp}>
+          <ScrollReveal scale>
             <p className="badge-meta bg-accent/20 text-accent mb-5">Start Planning Today</p>
             <h2 className="text-section font-serif text-primary-foreground mb-5">Ready for Your<br />African Adventure?</h2>
             <p className="text-primary-foreground/70 max-w-lg mx-auto mb-10 text-lg leading-relaxed">Let our expert team craft your perfect Tanzanian journey. No obligation, no commitment — just exceptional travel planning.</p>
             <div className="flex flex-wrap gap-4 justify-center">
               <button onClick={() => setInquiryOpen(true)}
-                className="px-8 py-4 bg-accent text-accent-foreground rounded-full font-medium transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] text-sm tracking-wide uppercase">
+                className="px-10 py-4 bg-accent text-accent-foreground rounded-full font-medium transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] text-sm tracking-wide uppercase">
                 Plan Your Safari <ArrowRight className="w-4 h-4 inline ml-2" />
               </button>
               <Link to="/contact"
-                className="px-8 py-4 bg-primary-foreground/10 text-primary-foreground backdrop-blur-sm rounded-full font-medium transition-all hover:bg-primary-foreground/20 border border-primary-foreground/20 text-sm tracking-wide uppercase">
+                className="px-10 py-4 bg-primary-foreground/10 text-primary-foreground backdrop-blur-sm rounded-full font-medium transition-all hover:bg-primary-foreground/20 border border-primary-foreground/20 text-sm tracking-wide uppercase">
                 Contact Us
               </Link>
             </div>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
 
