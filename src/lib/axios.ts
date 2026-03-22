@@ -6,8 +6,18 @@ function getCookie(name: string): string | null {
     return match ? decodeURIComponent(match[3]) : null;
 }
 
+// Determine base URL based on environment
+const getBaseURL = () => {
+    // In production, use the backend API URL directly
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        return 'https://app.godeepafricasafari.com/api';
+    }
+    // In development, use Vite proxy (empty string)
+    return '';
+};
+
 const lib = axios.create({
-    baseURL: '', // Empty - Vite proxy handles routing
+    baseURL: getBaseURL(),
     withCredentials: true,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',

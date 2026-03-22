@@ -156,7 +156,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN', null),
+    'domain' => env('SESSION_DOMAIN', '.godeepafricasafari.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,7 +169,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', false),
+    'secure' => env('SESSION_SECURE_COOKIE', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -182,7 +182,7 @@ return [
     |
     */
 
-    'http_only' => env('SESSION_HTTP_ONLY', false),
+    'http_only' => env('SESSION_HTTP_ONLY', true),
 
     /*
     |--------------------------------------------------------------------------
