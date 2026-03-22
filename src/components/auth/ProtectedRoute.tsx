@@ -22,7 +22,11 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>(() => {
+    // Initial check from localStorage to prevent flickering
+    const savedUser = localStorage.getItem("auth_user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [loading, setLoading] = useState(true);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const navigate = useNavigate();
@@ -30,73 +34,89 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAdmin = user?.role === 'admin';
 
+  // Sync user to localStorage
   useEffect(() => {
+    if (user) {
+      localStorage.setItem("auth_user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("auth_user");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    let isMounted = true;
+
     const checkAuth = async () => {
       const isLoginPage = location.pathname === '/login';
       const isRegisterPage = location.pathname === '/register';
       const isMaintenancePage = location.pathname === '/maintenance';
+      const isAdminRoute = location.pathname.startsWith('/admin');
       
-      // Check maintenance mode first
+      // If we are on public pages and not trying to access admin, we can be more relaxed
+      if (!isAdminRoute && !isLoginPage && !isRegisterPage && !isMaintenancePage) {
+        if (isMounted) setLoading(false);
+        return;
+      }
+
       try {
         const settingsRes = await axios.get("/api/settings/public");
-        const isMaintenance = settingsRes.data?.maintenance_mode === 'true';
-        setMaintenanceMode(isMaintenance);
-        
-        // If maintenance mode is on, check if user is admin
-        if (isMaintenance && !isMaintenancePage) {
-          try {
-            const userRes = await axios.get("/api/user");
-            const currentUser = userRes.data;
-            setUser(currentUser);
-            
-            // Non-admin users should see maintenance page
-            if (currentUser?.role !== 'admin') {
-              navigate("/maintenance", { replace: true });
-              setLoading(false);
-              return;
-            }
-          } catch (authError) {
-            // Not logged in - redirect to maintenance
-            setUser(null);
+        if (isMounted) {
+          const isMaintenance = settingsRes.data?.maintenance_mode === 'true';
+          setMaintenanceMode(isMaintenance);
+          
+          if (isMaintenance && !isMaintenancePage && !isAdminRoute) {
             navigate("/maintenance", { replace: true });
-            setLoading(false);
+            if (isMounted) setLoading(false);
             return;
           }
         }
       } catch (error) {
-        console.log("Failed to check maintenance mode:", error);
-      }
-
-      // Skip auth check for login, register, and maintenance pages
-      if (isLoginPage || isRegisterPage || isMaintenancePage) {
-        setLoading(false);
-        return;
-      }
-
-      // Only check auth for admin routes
-      const isAdminRoute = location.pathname.startsWith('/admin');
-      if (!isAdminRoute) {
-        setLoading(false);
-        return;
+        console.log("Settings check failed", error);
       }
 
       try {
+        // Essential: Check auth state from server
+        // Add a retry mechanism or check for existing session before redirecting
         const response = await axios.get("/api/user");
-        setUser(response.data);
+        if (isMounted) {
+          const userData = response.data;
+          setUser(userData);
+          
+          // If on login and already authenticated, go to dashboard
+          if (isLoginPage && userData.role === 'admin') {
+            navigate("/admin/dashboard", { replace: true });
+          }
+        }
       } catch (error: any) {
         console.log("Auth check failed:", error?.response?.status);
-        // Only redirect if it's a 401 (unauthorized)
+        
+        // If the request fails with 401, only redirect if we are on an admin route
+        // and we are NOT currently trying to log in.
         if (error?.response?.status === 401) {
-          setUser(null);
-          navigate("/login", { replace: true, state: { from: location } });
+          if (isMounted) {
+            setUser(null);
+            localStorage.removeItem("auth_user");
+            if (isAdminRoute) {
+              // Standardized redirect to login
+              navigate("/login", { replace: true, state: { from: location } });
+            }
+          }
         }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
-    checkAuth();
-  }, [location.pathname, navigate, location]);
+    // Use a small delay to allow cookies to be settled, especially after a fresh login or redirect
+    const timer = setTimeout(() => {
+      checkAuth();
+    }, 200); // Increased delay slightly for production stability
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, [location.pathname]); // Stay focused on path changes only
 
   const logout = async () => {
     try {

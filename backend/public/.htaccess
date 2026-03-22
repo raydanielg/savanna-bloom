@@ -35,8 +35,12 @@ Options -Indexes
 
 # Enable CORS for API requests from frontend
 <IfModule mod_headers.c>
-    # Allow requests from frontend domain
-    SetEnvIf Origin "https://app\.godeepafricasafari\.com" AccessControlAllowOrigin=$0
+    # Allow requests from frontend domain (godeepafricasafari.com)
+    SetEnvIf Origin "https://godeepafricasafari\.com" AccessControlAllowOrigin=$0
+    Header always set Access-Control-Allow-Origin "%{AccessControlAllowOrigin}e" env=AccessControlAllowOrigin
+    
+    # Also allow www subdomain
+    SetEnvIf Origin "https://www\.godeepafricasafari\.com" AccessControlAllowOrigin=$0
     Header always set Access-Control-Allow-Origin "%{AccessControlAllowOrigin}e" env=AccessControlAllowOrigin
     
     # Also allow localhost for development

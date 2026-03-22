@@ -6,7 +6,7 @@ import {
   LayoutDashboard,
   Map,
   Mountain,
-  Compass,
+  ShieldCheck,
   CalendarDays,
   Users,
   Settings,
@@ -177,16 +177,16 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
               {sidebarOpen && (isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />)}
             </button>
             {sidebarOpen && isExpanded && (
-              <div className="ml-4 mt-1 space-y-1 border-l-2 border-gray-100 pl-4">
+              <div className="ml-4 mt-1 space-y-1 border-l-2 border-orange-100 pl-4 bg-orange-50/30 rounded-r-lg py-1 animate-in slide-in-from-left-2 duration-200">
                 {item.subItems!.map((subItem) => (
                   <Link
                     key={subItem.href}
                     to={subItem.href}
                     className={cn(
-                      "block px-3 py-2 rounded-md text-sm transition-colors",
+                      "block px-3 py-2 rounded-md text-sm transition-all duration-200",
                       isActive(subItem.href)
-                        ? "bg-orange-50 text-orange-700 font-medium"
-                        : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                        ? "bg-orange-100 text-orange-800 font-bold translate-x-1"
+                        : "text-gray-500 hover:text-orange-600 hover:bg-orange-50/50 hover:translate-x-1"
                     )}
                   >
                     {subItem.label}
@@ -254,9 +254,9 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm px-4 py-3 flex items-center justify-between">
         <Link to="/admin/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
-            <Compass size={18} className="text-white" />
+            <ShieldCheck size={18} className="text-white" />
           </div>
-          <span className="font-bold text-orange-600">Savanna Bloom</span>
+          <span className="font-bold text-orange-600 uppercase tracking-tight">Go Deep Africa</span>
         </Link>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -291,11 +291,11 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
             <>
               <Link to="/admin/dashboard" className="flex items-center gap-2">
                 <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
-                  <Compass size={20} className="text-white" />
+                  <ShieldCheck size={20} className="text-white" />
                 </div>
                 <div>
-                  <h1 className="font-bold text-gray-800">Savanna Bloom</h1>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wider">Admin Panel</p>
+                  <h1 className="font-bold text-gray-800 uppercase tracking-tighter leading-none">Go Deep Africa</h1>
+                  <p className="text-[9px] text-orange-500 font-bold uppercase tracking-widest mt-0.5">Admin Control</p>
                 </div>
               </Link>
               <button
@@ -330,8 +330,8 @@ export default function AdminLayout({ children, user }: AdminLayoutProps) {
                 {authUser?.name?.charAt(0) || user?.name?.charAt(0) || "A"}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-800 truncate">{authUser?.name || user?.name || "Admin"}</p>
-                <p className="text-xs text-gray-400 truncate">{authUser?.email || user?.email || "admin@savannabloom.com"}</p>
+                <p className="text-sm font-bold text-gray-900 truncate">{authUser?.name || user?.name || "Admin"}</p>
+                <p className="text-[10px] text-orange-600 font-semibold truncate uppercase tracking-tight">{authUser?.email || user?.email || "admin@godeepafricasafari.com"}</p>
               </div>
             </div>
           ) : (

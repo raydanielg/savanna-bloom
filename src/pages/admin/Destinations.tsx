@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/auth/ProtectedRoute";
 import AdminLayout from "@/components/layout/AdminLayout";
+import { getStorageUrl } from "@/lib/storage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,7 +76,7 @@ interface Destination {
 }
 
 export default function Destinations() {
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,22 +104,30 @@ export default function Destinations() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchData();
-  }, [navigate]);
-
-  const fetchData = async () => {
-    try {
-      const userResponse = await axios.get("/api/user");
-      setUser(userResponse.data);
-
-      const destinationsResponse = await axios.get("/api/destinations");
-      setDestinations(destinationsResponse.data || []);
-    } catch (error) {
-      navigate("/login");
-    } finally {
+    let isMounted = true;
+    const fetchData = async () => {
+      try {
+        const destinationsResponse = await axios.get("/api/destinations");
+        if (isMounted) {
+          setDestinations(destinationsResponse.data || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch destinations:", error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    
+    if (user) {
+      fetchData();
+    } else {
       setLoading(false);
     }
-  };
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   const handleOpenCreate = () => {
     setEditingDestination(null);
@@ -323,7 +333,7 @@ export default function Destinations() {
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center overflow-hidden">
                           {destination.image ? (
-                            <img src={destination.image} alt={destination.name} className="h-10 w-10 object-cover" />
+                            <img src={getStorageUrl(destination.image)} alt={destination.name} className="h-10 w-10 object-cover" />
                           ) : (
                             <Globe className="h-5 w-5 text-blue-600" />
                           )}
@@ -497,7 +507,7 @@ export default function Destinations() {
           {viewingDestination && (
             <div className="space-y-4">
               {viewingDestination.image && (
-                <img src={viewingDestination.image} alt={viewingDestination.name} className="w-full h-48 object-cover rounded-lg" />
+                <img src={getStorageUrl(viewingDestination.image)} alt={viewingDestination.name} className="w-full h-48 object-cover rounded-lg" />
               )}
               
               <div className="flex gap-2">

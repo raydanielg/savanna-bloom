@@ -38,6 +38,13 @@ import AdminPackageCreate from "./pages/admin/PackageCreate.tsx";
 import AdminGallery from "./pages/admin/Gallery.tsx";
 import AdminFaqs from "./pages/admin/Faqs.tsx";
 import AdminSettings from "./pages/admin/Settings.tsx";
+import AdminSafariDetails from "./pages/admin/SafariDetails.tsx";
+import AdminSafariCategories from "./pages/admin/SafariCategories.tsx";
+import AdminUserDetails from "./pages/admin/UserDetails.tsx";
+import AdminKilimanjaroRouteDetails from "./pages/admin/KilimanjaroRouteDetails.tsx";
+import AdminDestinationForm from "./pages/admin/DestinationForm.tsx";
+import AdminKilimanjaroRouteForm from "./pages/admin/KilimanjaroRouteForm.tsx";
+import AdminBlogPostForm from "./pages/admin/BlogPostForm.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Maintenance from "./pages/Maintenance.tsx";
 // Auth
@@ -78,8 +85,13 @@ const App = () => (
             <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/safaris" element={<ProtectedRoute><AdminSafaris /></ProtectedRoute>} />
             <Route path="/admin/safaris/create" element={<ProtectedRoute><AdminSafaris /></ProtectedRoute>} />
-            <Route path="/admin/destinations" element={<ProtectedRoute><AdminDestinations /></ProtectedRoute>} />
+            <Route path="/admin/safaris/categories" element={<ProtectedRoute><AdminSafariCategories /></ProtectedRoute>} />
+            <Route path="/admin/safaris/:id" element={<ProtectedRoute><AdminSafariDetails /></ProtectedRoute>} />
+            <Route path="/admin/destinations/:id" element={<ProtectedRoute><AdminDestinationForm /></ProtectedRoute>} />
+            <Route path="/admin/destinations/create" element={<ProtectedRoute><AdminDestinationForm /></ProtectedRoute>} />
             <Route path="/admin/kilimanjaro-routes" element={<ProtectedRoute><AdminKilimanjaroRoutes /></ProtectedRoute>} />
+            <Route path="/admin/kilimanjaro-routes/:id" element={<ProtectedRoute><AdminKilimanjaroRouteDetails /></ProtectedRoute>} />
+            <Route path="/admin/kilimanjaro-routes/create" element={<ProtectedRoute><AdminKilimanjaroRouteForm /></ProtectedRoute>} />
             <Route path="/admin/day-trips" element={<ProtectedRoute><AdminDayTrips /></ProtectedRoute>} />
             <Route path="/admin/day-trips/create" element={<ProtectedRoute><AdminDayTripCreate /></ProtectedRoute>} />
             <Route path="/admin/packages" element={<ProtectedRoute><AdminPackages /></ProtectedRoute>} />
@@ -91,10 +103,13 @@ const App = () => (
             <Route path="/admin/bookings/:id/invoice" element={<ProtectedRoute><AdminBookingInvoice /></ProtectedRoute>} />
             <Route path="/admin/inquiries" element={<ProtectedRoute><AdminInquiries /></ProtectedRoute>} />
             <Route path="/admin/blog" element={<ProtectedRoute><AdminBlogPosts /></ProtectedRoute>} />
+            <Route path="/admin/blog/:id" element={<ProtectedRoute><AdminBlogPostForm /></ProtectedRoute>} />
+            <Route path="/admin/blog/create" element={<ProtectedRoute><AdminBlogPostForm /></ProtectedRoute>} />
             <Route path="/admin/testimonials" element={<ProtectedRoute><AdminTestimonials /></ProtectedRoute>} />
             <Route path="/admin/gallery" element={<ProtectedRoute><AdminGallery /></ProtectedRoute>} />
             <Route path="/admin/faqs" element={<ProtectedRoute><AdminFaqs /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
+            <Route path="/admin/users/:id" element={<ProtectedRoute><AdminUserDetails /></ProtectedRoute>} />
             <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
             
             <Route path="*" element={<NotFound />} />

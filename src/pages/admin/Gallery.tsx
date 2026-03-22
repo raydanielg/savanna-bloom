@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/auth/ProtectedRoute";
 import AdminLayout from "@/components/layout/AdminLayout";
+import { getStorageUrl } from "@/lib/storage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,7 +73,7 @@ interface GalleryItem {
 }
 
 export default function Gallery() {
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -98,22 +100,30 @@ export default function Gallery() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchData();
-  }, [navigate]);
-
-  const fetchData = async () => {
-    try {
-      const userResponse = await axios.get("/api/user");
-      setUser(userResponse.data);
-
-      const galleryResponse = await axios.get("/api/gallery");
-      setItems(galleryResponse.data?.data || galleryResponse.data || []);
-    } catch (error) {
-      navigate("/login");
-    } finally {
+    let isMounted = true;
+    const fetchData = async () => {
+      try {
+        const galleryResponse = await axios.get("/api/gallery");
+        if (isMounted) {
+          setItems(galleryResponse.data?.data || galleryResponse.data || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch gallery:", error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    
+    if (user) {
+      fetchData();
+    } else {
       setLoading(false);
     }
-  };
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   const handleOpenCreate = () => {
     setEditingItem(null);
@@ -318,7 +328,7 @@ export default function Gallery() {
                 <div key={item.id} className="group relative">
                   <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                     {item.image ? (
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                      <img src={getStorageUrl(item.image)} alt={item.title} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <Image className="h-8 w-8 text-gray-400" />
@@ -459,7 +469,7 @@ export default function Gallery() {
           {viewingItem && (
             <div className="space-y-4">
               {viewingItem.image && (
-                <img src={viewingItem.image} alt={viewingItem.title} className="w-full h-64 object-cover rounded-lg" />
+                <img src={getStorageUrl(viewingItem.image)} alt={viewingItem.title} className="w-full h-64 object-cover rounded-lg" />
               )}
               
               <div className="flex gap-2">

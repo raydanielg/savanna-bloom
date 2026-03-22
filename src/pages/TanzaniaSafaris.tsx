@@ -5,6 +5,7 @@ import { Clock, ArrowRight, Camera, Star, MapPin, Users, TrendingUp } from "luci
 import Layout from "@/components/layout/Layout";
 import InquiryModal from "@/components/InquiryModal";
 import axios from "@/lib/axios";
+import { getStorageUrl } from "@/lib/storage";
 
 import { fadeInUp } from "@/lib/animations";
 
@@ -64,7 +65,7 @@ const TanzaniaSafaris = () => {
     <Layout>
       {/* Hero */}
       <section className="relative h-[70vh] min-h-[500px] -mt-24">
-        <img src="/storage/hero/kilimanjaro-hero.jpg" alt="Mount Kilimanjaro at sunrise" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={getStorageUrl('/storage/hero/kilimanjaro-hero.jpg')} alt="Mount Kilimanjaro at sunrise" className="absolute inset-0 w-full h-full object-cover" />
         <div className="hero-gradient-strong absolute inset-0" />
         <div className="relative h-full flex items-end pb-16 safari-container">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -82,7 +83,7 @@ const TanzaniaSafaris = () => {
             <motion.div {...fadeInUp}>
               <Link to={`/safari/${featured.slug || featured.id}`} className="group grid lg:grid-cols-2 bg-card rounded-3xl overflow-hidden card-shadow-lg hover:shadow-2xl transition-shadow">
                 <div className="aspect-[4/3] lg:aspect-auto overflow-hidden">
-                  <img src={featured.image || '/placeholder-safari.jpg'} alt={featured.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" />
+                  <img src={featured.image ? getStorageUrl(featured.image) : '/placeholder-safari.jpg'} alt={featured.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" />
                 </div>
                 <div className="p-8 lg:p-12 flex flex-col justify-center">
                   <p className="badge-meta bg-accent/10 text-accent mb-4"><Star className="w-3 h-3" /> Featured Safari</p>
@@ -144,7 +145,7 @@ const TanzaniaSafaris = () => {
                 <motion.div key={safari.id} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.08 }}>
                   <Link to={`/safari/${safari.slug || safari.id}`} className="group block bg-card rounded-2xl overflow-hidden card-shadow hover:card-shadow-lg transition-all h-full">
                     <div className="aspect-[4/3] overflow-hidden relative">
-                      <img src={safari.image || '/placeholder-safari.jpg'} alt={safari.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
+                      <img src={safari.image ? getStorageUrl(safari.image) : '/placeholder-safari.jpg'} alt={safari.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
                       <div className="absolute top-4 left-4">
                         <span className="badge-meta bg-primary/90 text-primary-foreground backdrop-blur-sm">
                           <Clock className="w-3 h-3" /> {safari.duration || `${safari.days} Days`}

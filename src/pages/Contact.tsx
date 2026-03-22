@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Clock, MessageCircle, ArrowRight, Send } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import { getStorageUrl } from "@/lib/storage";
 
 import { fadeInUp } from "@/lib/animations";
 
@@ -13,7 +14,7 @@ const Contact = () => {
     <Layout>
       {/* Hero */}
       <section className="relative h-[45vh] min-h-[350px] -mt-24">
-        <img src="/storage/hero/kili-summit.jpg" alt="Tanzania landscape" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={getStorageUrl('/storage/hero/kili-summit.jpg')} alt="Tanzania landscape" className="absolute inset-0 w-full h-full object-cover" />
         <div className="hero-gradient-strong absolute inset-0" />
         <div className="relative h-full flex items-end pb-14 safari-container">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>

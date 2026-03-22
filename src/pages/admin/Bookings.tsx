@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/auth/ProtectedRoute";
 import AdminLayout from "@/components/layout/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ interface Booking {
 }
 
 export default function Bookings() {
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -89,30 +90,32 @@ export default function Bookings() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       try {
-        const userResponse = await axios.get("/api/user");
-        setUser(userResponse.data);
-
-        const bookingsResponse = await axios.get("/api/admin/bookings").catch(() => ({ data: { data: [] } }));
-        // Handle paginated response from Laravel
-        const data = bookingsResponse.data?.data || bookingsResponse.data || [];
-        const bookingsArray = Array.isArray(data) ? data : [];
-        console.log('Bookings loaded:', bookingsArray.length);
-        setBookings(bookingsArray);
-      } catch (error: any) {
-        console.error("Failed to fetch data:", error);
-        if (error.response?.status === 401) {
-          navigate("/login");
+        const bookingsResponse = await axios.get("/api/admin/bookings");
+        if (isMounted) {
+          const data = bookingsResponse.data?.data || bookingsResponse.data || [];
+          setBookings(Array.isArray(data) ? data : []);
         }
-        // For other errors, show empty state
-        setBookings([]);
+      } catch (error: any) {
+        console.error("Failed to fetch bookings:", error);
+        if (isMounted) setBookings([]);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
-    fetchData();
-  }, [navigate]);
+    
+    if (user) {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   const openActionDialog = (booking: Booking, type: "confirm" | "cancel" | "delete") => {
     setActionBooking(booking);

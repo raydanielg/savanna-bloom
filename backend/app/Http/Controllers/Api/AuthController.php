@@ -59,19 +59,35 @@ class AuthController extends Controller
         // Regenerate session ID to prevent session fixation
         $request->session()->regenerate();
 
+        $cookieDomain = config('session.domain');
+        $isSecure = config('session.secure');
+        $sameSite = config('session.same_site');
+
         return response()->json([
             'user' => $user,
             'message' => 'Login successful'
-        ])->withCookie(cookie(
+        ])
+        ->withCookie(cookie(
             'XSRF-TOKEN',
             $request->session()->token(),
             10080, // 7 days
             '/',
-            null,
+            $cookieDomain,
+            $isSecure,
+            false, // httpOnly must be false for XSRF-TOKEN so JS can read it
             false,
+            $sameSite
+        ))
+        ->withCookie(cookie(
+            config('session.cookie'),
+            $request->session()->getId(),
+            10080, // 7 days
+            '/',
+            $cookieDomain,
+            $isSecure,
+            true, // httpOnly true for session security
             false,
-            false,
-            'lax'
+            $sameSite
         ));
     }
 

@@ -29,6 +29,7 @@ Route::middleware(['auth:sanctum'])->get('/user', [AuthController::class, 'user'
 Route::get('/destinations', [DestinationController::class, 'index']);
 Route::get('/destinations/{id}', [DestinationController::class, 'show']);
 Route::get('/safaris', [SafariController::class, 'index']);
+Route::get('/safaris/categories', [SafariController::class, 'categories']);
 Route::get('/safaris/{id}', [SafariController::class, 'show']);
 Route::get('/kilimanjaro-routes', [KilimanjaroRouteController::class, 'index']);
 Route::get('/kilimanjaro-routes/{id}', [KilimanjaroRouteController::class, 'show']);

@@ -5,6 +5,7 @@ import { MapPin, ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import InquiryModal from "@/components/InquiryModal";
 import axios from "@/lib/axios";
+import { getStorageUrl } from "@/lib/storage";
 
 import { fadeInUp } from "@/lib/animations";
 
@@ -57,7 +58,7 @@ const Destinations = () => {
     <Layout>
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[450px] -mt-24">
-        <img src="/storage/hero/migration.jpg" alt="Tanzania landscape" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={getStorageUrl('/storage/hero/migration.jpg')} alt="Tanzania landscape" className="absolute inset-0 w-full h-full object-cover" />
         <div className="hero-gradient-strong absolute inset-0" />
         <div className="relative h-full flex items-end pb-14 safari-container">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -94,7 +95,7 @@ const Destinations = () => {
                 <motion.div key={dest.id} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.08 }}>
                   <Link to={`/destination/${dest.slug || dest.id}`} className={`group grid md:grid-cols-2 bg-card rounded-2xl overflow-hidden card-shadow hover:card-shadow-lg transition-all ${i % 2 === 1 ? "md:[direction:rtl]" : ""}`}>
                     <div className="aspect-[16/10] md:aspect-auto overflow-hidden md:[direction:ltr]">
-                      <img src={dest.image || '/placeholder-destination.jpg'} alt={dest.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
+                      <img src={dest.image ? getStorageUrl(dest.image) : '/placeholder-destination.jpg'} alt={dest.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
                     </div>
                     <div className="p-8 lg:p-12 flex flex-col justify-center md:[direction:ltr]">
                       {dest.region && (

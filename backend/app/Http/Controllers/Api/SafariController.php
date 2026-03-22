@@ -101,6 +101,15 @@ class SafariController extends Controller
         return response()->json($safari->load('destination'));
     }
 
+    public function categories()
+    {
+        $categories = Safari::select('category')
+            ->whereNotNull('category')
+            ->distinct()
+            ->pluck('category');
+        return response()->json($categories);
+    }
+
     public function destroy($id)
     {
         $safari = Safari::findOrFail($id);

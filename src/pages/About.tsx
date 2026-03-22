@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Shield, Award, Users, Heart, Mountain, Globe } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import { getStorageUrl } from "@/lib/storage";
 
 import { fadeInUp } from "@/lib/animations";
 
@@ -15,7 +16,7 @@ const About = () => {
   return (
     <Layout>
       <section className="relative h-[60vh] min-h-[450px] -mt-24">
-        <img src="/storage/hero/hero-safari.jpg" alt="African landscape" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={getStorageUrl('/storage/hero/hero-safari.jpg')} alt="African landscape" className="absolute inset-0 w-full h-full object-cover" />
         <div className="hero-gradient-strong absolute inset-0" />
         <div className="relative h-full flex items-end pb-16 safari-container">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -44,14 +45,14 @@ const About = () => {
           <motion.div {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.2 }}>
             <div className="grid grid-cols-2 gap-4">
               <div className="image-reveal rounded-2xl aspect-[3/4]">
-                <img src="/storage/kilimanjaro/kilimanjaro-climbing.jpg" alt="Our team on Kilimanjaro" className="w-full h-full object-cover" loading="lazy" />
+                <img src={getStorageUrl('/storage/kilimanjaro/kilimanjaro-climbing.jpg')} alt="Our team on Kilimanjaro" className="w-full h-full object-cover" loading="lazy" />
               </div>
               <div className="space-y-4 pt-8">
                 <div className="image-reveal rounded-2xl aspect-square">
-                  <img src="/storage/gallery/elephant.jpg" alt="Elephant encounter" className="w-full h-full object-cover" loading="lazy" />
+                  <img src={getStorageUrl('/storage/gallery/elephant.jpg')} alt="Elephant encounter" className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <div className="image-reveal rounded-2xl aspect-[4/3]">
-                  <img src="/storage/gallery/luxury-camp.jpg" alt="Luxury camp" className="w-full h-full object-cover" loading="lazy" />
+                  <img src={getStorageUrl('/storage/gallery/luxury-camp.jpg')} alt="Luxury camp" className="w-full h-full object-cover" loading="lazy" />
                 </div>
               </div>
             </div>
@@ -116,7 +117,7 @@ const About = () => {
         <div className="safari-container grid lg:grid-cols-2 gap-16 items-center">
           <motion.div {...fadeInUp}>
             <div className="image-reveal rounded-3xl overflow-hidden">
-              <img src="/storage/gallery/safari-vehicle.jpg" alt="Safari vehicle" className="w-full h-auto object-cover" loading="lazy" />
+              <img src={getStorageUrl('/storage/gallery/safari-vehicle.jpg')} alt="Safari vehicle" className="w-full h-auto object-cover" loading="lazy" />
             </div>
           </motion.div>
           <motion.div {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.2 }}>

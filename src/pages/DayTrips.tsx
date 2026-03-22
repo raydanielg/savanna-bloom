@@ -4,6 +4,7 @@ import { Clock, Sun, ArrowRight, MapPin, Check } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import InquiryModal from "@/components/InquiryModal";
 import axios from "@/lib/axios";
+import { getStorageUrl } from "@/lib/storage";
 
 import { fadeInUp } from "@/lib/animations";
 
@@ -64,7 +65,7 @@ const DayTrips = () => {
     <Layout>
       {/* Hero */}
       <section className="relative h-[50vh] min-h-[400px] -mt-24">
-        <img src="/storage/hero/hero-safari.jpg" alt="Tanzania day trip" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={getStorageUrl('/storage/hero/hero-safari.jpg')} alt="Tanzania day trip" className="absolute inset-0 w-full h-full object-cover" />
         <div className="hero-gradient-strong absolute inset-0" />
         <div className="relative h-full flex items-end pb-14 safari-container">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -102,7 +103,7 @@ const DayTrips = () => {
                   <div className="group bg-card rounded-2xl overflow-hidden card-shadow hover:card-shadow-lg transition-all">
                     <div className="grid md:grid-cols-[400px_1fr] lg:grid-cols-[480px_1fr]">
                       <div className="aspect-[16/10] md:aspect-auto overflow-hidden">
-                        <img src={trip.image || '/placeholder-trip.jpg'} alt={trip.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
+                        <img src={trip.image ? getStorageUrl(trip.image) : '/placeholder-trip.jpg'} alt={trip.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
                       </div>
                       <div className="p-6 lg:p-8 flex flex-col justify-between">
                         <div>

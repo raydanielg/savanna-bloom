@@ -1,9 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, X, Image as ImageIcon, Link } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getStorageUrl } from "@/lib/storage";
 
 interface ImageUploadProps {
   value: string;
@@ -17,6 +18,11 @@ export default function ImageUpload({ value, onChange, label, className }: Image
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(value);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Update preview when value changes from parent
+  useEffect(() => {
+    setPreview(value);
+  }, [value]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -141,11 +147,16 @@ export default function ImageUpload({ value, onChange, label, className }: Image
       {preview && (
         <div className="relative mt-2 inline-block">
           <img
-            src={preview}
+            src={getStorageUrl(preview)}
             alt="Preview"
-            className="h-32 w-auto rounded-lg border object-cover"
+            className="h-32 w-auto rounded-lg border object-cover min-w-[100px] bg-slate-50"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x150?text=Invalid+Image';
+              const target = e.target as HTMLImageElement;
+              if (preview.startsWith('http')) {
+                target.src = preview; // Fallback to raw URL if storage URL fails
+              } else {
+                target.src = 'https://via.placeholder.com/200x150?text=Invalid+Image';
+              }
             }}
           />
           <Button

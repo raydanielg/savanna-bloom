@@ -10,7 +10,7 @@ function getCookie(name: string): string | null {
 const getBaseURL = () => {
     // In production, use the backend API URL directly
     if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        return 'https://app.godeepafricasafari.com/api';
+        return 'https://app.godeepafricasafari.com';
     }
     // In development, use Vite proxy (empty string)
     return '';
@@ -32,6 +32,7 @@ lib.interceptors.request.use((config) => {
     if (xsrfToken) {
         config.headers['X-XSRF-TOKEN'] = xsrfToken;
     }
+    config.withCredentials = true; // Force withCredentials for every request
     return config;
 });
 

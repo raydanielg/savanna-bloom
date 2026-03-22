@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/auth/ProtectedRoute";
 import AdminLayout from "@/components/layout/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -44,28 +45,37 @@ interface Safari {
 }
 
 export default function Safaris() {
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [safaris, setSafaris] = useState<Safari[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       try {
-        const userResponse = await axios.get("/api/user");
-        setUser(userResponse.data);
-
         const safarisResponse = await axios.get("/api/safaris");
-        setSafaris(safarisResponse.data || []);
+        if (isMounted) {
+          setSafaris(safarisResponse.data || []);
+        }
       } catch (error) {
-        navigate("/login");
+        console.error("Failed to fetch safaris:", error);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
-    fetchData();
-  }, [navigate]);
+    
+    if (user) {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this safari?")) return;

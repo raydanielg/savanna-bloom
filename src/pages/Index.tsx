@@ -6,6 +6,7 @@ import Layout from "@/components/layout/Layout";
 import InquiryModal from "@/components/InquiryModal";
 import { ScrollReveal, StaggerContainer, StaggerItem, ParallaxImage } from "@/hooks/useScrollAnimation";
 import axios from "@/lib/axios";
+import { getStorageUrl } from "@/lib/storage";
 
 import { easeOutQuint } from "@/lib/animations";
 
@@ -104,14 +105,14 @@ const Index = () => {
           muted
           loop
           playsInline
-          poster="/storage/hero/hero-safari.jpg"
+          poster={getStorageUrl('/storage/hero/hero-safari.jpg')}
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src="https://assets.mixkit.co/videos/preview/mixkit-elephants-walking-in-the-savanna-42881-large.mp4" type="video/mp4" />
           <source src="https://assets.mixkit.co/videos/preview/mixkit-herd-of-zebras-running-in-the-savanna-42882-large.mp4" type="video/mp4" />
-          <source src="/storage/hero/hero-video.mp4" type="video/mp4" />
+          <source src={getStorageUrl('/storage/hero/hero-video.mp4')} type="video/mp4" />
         </video>
-        <img src="/storage/hero/hero-safari.jpg" alt="African savannah at golden hour" className="absolute inset-0 w-full h-full object-cover" style={{ zIndex: -1 }} />
+        <img src={getStorageUrl('/storage/hero/hero-safari.jpg')} alt="African savannah at golden hour" className="absolute inset-0 w-full h-full object-cover" style={{ zIndex: -1 }} />
         <div className="hero-gradient-strong absolute inset-0" />
 
         <div className="relative h-full flex flex-col items-center justify-center text-center safari-container">
@@ -226,7 +227,7 @@ const Index = () => {
               {destinations.slice(0, 6).map((dest, i) => (
                 <StaggerItem key={dest.id} className={i === 0 ? "md:col-span-2 md:row-span-2" : ""}>
                   <Link to={`/destination/${dest.slug || dest.id}`} className="route-card group block overflow-hidden rounded-2xl" style={{ aspectRatio: i === 0 ? "1" : "4/5" }}>
-                    <img src={dest.image || '/placeholder-destination.jpg'} alt={dest.name} className="w-full h-full object-cover" loading="lazy" />
+                    <img src={dest.image ? getStorageUrl(dest.image) : '/placeholder-destination.jpg'} alt={dest.name} className="w-full h-full object-cover" loading="lazy" />
                     <div className="hero-gradient absolute inset-0" />
                     <div className="card-content">
                       <p className="text-[11px] uppercase tracking-[0.2em] text-primary-foreground/50 mb-1">{dest.region || 'Tanzania'}</p>
@@ -247,7 +248,7 @@ const Index = () => {
       {/* Full-width parallax break */}
       <section className="relative h-[60vh] min-h-[450px] overflow-hidden">
         <motion.img
-          src="/storage/hero/migration.jpg"
+          src={getStorageUrl('/storage/hero/migration.jpg')}
           alt="Wildebeest Great Migration"
           className="absolute inset-0 w-full h-full object-cover"
           initial={{ scale: 1.15 }}
@@ -317,7 +318,7 @@ const Index = () => {
             </ScrollReveal>
             <ScrollReveal direction="right" delay={0.15}>
               <div className="route-card group aspect-[3/4] rounded-3xl overflow-hidden">
-                <img src={routes[0]?.image || '/storage/kilimanjaro/kilimanjaro-climbing.jpg'} alt="Climbers ascending Kilimanjaro" className="w-full h-full object-cover" />
+                <img src={routes[0]?.image ? getStorageUrl(routes[0].image) : getStorageUrl('/storage/kilimanjaro/kilimanjaro-climbing.jpg')} alt="Climbers ascending Kilimanjaro" className="w-full h-full object-cover" />
                 <div className="hero-gradient absolute inset-0" />
                 <div className="card-content p-8">
                   <p className="badge-meta bg-accent/20 text-accent mb-3">Most Popular</p>
@@ -368,7 +369,7 @@ const Index = () => {
                 <StaggerItem key={safari.id}>
                   <Link to={`/safari/${safari.slug || safari.id}`} className="group block bg-card rounded-2xl overflow-hidden card-shadow hover:card-shadow-lg transition-all">
                     <div className="aspect-[16/9] overflow-hidden relative">
-                      <img src={safari.image || '/placeholder-safari.jpg'} alt={safari.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
+                      <img src={safari.image ? getStorageUrl(safari.image) : '/placeholder-safari.jpg'} alt={safari.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
                       <div className="absolute top-4 right-4">
                         <span className="badge-meta bg-primary/90 text-primary-foreground backdrop-blur-sm">
                           <Clock className="w-3 h-3" /> {safari.duration || `${safari.days} Days`}
@@ -432,18 +433,18 @@ const Index = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
                   <div className="image-reveal rounded-2xl aspect-[3/4] overflow-hidden">
-                    <img src="/storage/gallery/luxury-lodge.jpg" alt="Luxury safari lodge" className="w-full h-full object-cover" loading="lazy" />
+                    <img src={getStorageUrl('/storage/gallery/luxury-lodge.jpg')} alt="Luxury safari lodge" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="image-reveal rounded-2xl aspect-square overflow-hidden">
-                    <img src="/storage/gallery/leopard.jpg" alt="Leopard on tree" className="w-full h-full object-cover" loading="lazy" />
+                    <img src={getStorageUrl('/storage/gallery/leopard.jpg')} alt="Leopard on tree" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 </div>
                 <div className="space-y-4 pt-8">
                   <div className="image-reveal rounded-2xl aspect-square overflow-hidden">
-                    <img src="/storage/gallery/wildlife-lion.jpg" alt="Lion in the savannah" className="w-full h-full object-cover" loading="lazy" />
+                    <img src={getStorageUrl('/storage/gallery/wildlife-lion.jpg')} alt="Lion in the savannah" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="image-reveal rounded-2xl aspect-[3/4] overflow-hidden">
-                    <img src="/storage/kilimanjaro/serengeti-sunset.jpg" alt="Sunset safari" className="w-full h-full object-cover" loading="lazy" />
+                    <img src={getStorageUrl('/storage/kilimanjaro/serengeti-sunset.jpg')} alt="Sunset safari" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 </div>
               </div>
@@ -479,7 +480,7 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <ScrollReveal direction="left">
               <div className="image-reveal rounded-3xl overflow-hidden">
-                <img src="/storage/gallery/safari-vehicle.jpg" alt="Safari vehicle in the Serengeti" className="w-full h-auto object-cover" loading="lazy" />
+                <img src={getStorageUrl('/storage/gallery/safari-vehicle.jpg')} alt="Safari vehicle in the Serengeti" className="w-full h-auto object-cover" loading="lazy" />
               </div>
             </ScrollReveal>
             <ScrollReveal direction="right" delay={0.15}>
@@ -555,7 +556,7 @@ const Index = () => {
       {/* CTA */}
       <section className="relative py-36 overflow-hidden">
         <motion.img
-          src="/storage/hero/kili-summit.jpg"
+          src={getStorageUrl('/storage/hero/kili-summit.jpg')}
           alt="Kilimanjaro summit at sunrise"
           className="absolute inset-0 w-full h-full object-cover"
           initial={{ scale: 1.15 }}

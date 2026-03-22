@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/auth/ProtectedRoute";
 import AdminLayout from "@/components/layout/AdminLayout";
+import { getStorageUrl } from "@/lib/storage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,7 +77,7 @@ interface KilimanjaroRoute {
 }
 
 export default function KilimanjaroRoutes() {
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -105,22 +107,30 @@ export default function KilimanjaroRoutes() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchData();
-  }, [navigate]);
-
-  const fetchData = async () => {
-    try {
-      const userResponse = await axios.get("/api/user");
-      setUser(userResponse.data);
-
-      const routesResponse = await axios.get("/api/kilimanjaro-routes");
-      setRoutes(routesResponse.data || []);
-    } catch (error) {
-      navigate("/login");
-    } finally {
+    let isMounted = true;
+    const fetchData = async () => {
+      try {
+        const routesResponse = await axios.get("/api/kilimanjaro-routes");
+        if (isMounted) {
+          setRoutes(routesResponse.data || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch routes:", error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    
+    if (user) {
+      fetchData();
+    } else {
       setLoading(false);
     }
-  };
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   const handleOpenCreate = () => {
     setEditingRoute(null);
@@ -340,7 +350,7 @@ export default function KilimanjaroRoutes() {
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center overflow-hidden">
                           {route.image ? (
-                            <img src={route.image} alt={route.name} className="h-10 w-10 object-cover" />
+                            <img src={getStorageUrl(route.image)} alt={route.name} className="h-10 w-10 object-cover" />
                           ) : (
                             <Mountain className="h-5 w-5 text-blue-600" />
                           )}
@@ -547,7 +557,7 @@ export default function KilimanjaroRoutes() {
           {viewingRoute && (
             <div className="space-y-4">
               {viewingRoute.image && (
-                <img src={viewingRoute.image} alt={viewingRoute.name} className="w-full h-48 object-cover rounded-lg" />
+                <img src={getStorageUrl(viewingRoute.image)} alt={viewingRoute.name} className="w-full h-48 object-cover rounded-lg" />
               )}
               
               <div className="grid grid-cols-4 gap-3">

@@ -5,6 +5,7 @@ import { Mountain, Clock, TrendingUp, ChevronRight, ArrowRight, Star, Shield } f
 import Layout from "@/components/layout/Layout";
 import InquiryModal from "@/components/InquiryModal";
 import axios from "@/lib/axios";
+import { getStorageUrl } from "@/lib/storage";
 
 import { fadeInUp } from "@/lib/animations";
 
@@ -56,7 +57,7 @@ const Kilimanjaro = () => {
     <Layout>
       {/* Hero */}
       <section className="relative h-[80vh] min-h-[600px] -mt-24">
-        <img src="/storage/hero/kilimanjaro-hero.jpg" alt="Mount Kilimanjaro at sunrise" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={getStorageUrl('/storage/hero/kilimanjaro-hero.jpg')} alt="Mount Kilimanjaro at sunrise" className="absolute inset-0 w-full h-full object-cover" />
         <div className="hero-gradient-strong absolute inset-0" />
         <div className="relative h-full flex items-end pb-20 safari-container">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -108,7 +109,7 @@ const Kilimanjaro = () => {
                 <motion.div key={route.id} {...fadeInUp} transition={{ ...fadeInUp.transition, delay: i * 0.08 }}>
                   <Link to={`/kilimanjaro/${route.slug || route.id}`} className="group grid md:grid-cols-[320px_1fr] lg:grid-cols-[380px_1fr] bg-card rounded-2xl overflow-hidden card-shadow hover:card-shadow-lg transition-all">
                     <div className="aspect-[16/10] md:aspect-auto overflow-hidden">
-                      <img src={route.image || '/placeholder-kilimanjaro.jpg'} alt={route.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
+                      <img src={route.image ? getStorageUrl(route.image) : '/placeholder-kilimanjaro.jpg'} alt={route.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out-quint" loading="lazy" />
                     </div>
                     <div className="p-6 lg:p-8 flex flex-col justify-between">
                       <div>
