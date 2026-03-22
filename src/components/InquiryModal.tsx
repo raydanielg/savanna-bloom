@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, Users, MapPin, User, Mail, Phone, MessageSquare, ChevronRight, ChevronLeft, Check, Mountain, Tent } from "lucide-react";
+import { X, Calendar, Users, MapPin, User, Mail, Phone, MessageSquare, ChevronRight, ChevronLeft, Check, Mountain, Tent, Loader2 } from "lucide-react";
+import axios from "@/lib/axios";
 
 interface InquiryModalProps {
   isOpen: boolean;
@@ -44,8 +45,13 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const update = (field: string, value: string) => setForm((prev) => ({ ...prev, [field]: value }));
+  const update = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    if (error) setError(null);
+  };
 
   const canNext = () => {
     switch (step) {
@@ -53,13 +59,34 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
       case 1: return !!form.date;
       case 2: return !!form.travelers;
       case 3: return !!form.accommodation;
-      case 4: return !!form.name && !!form.email;
+      case 4: return !!form.name && !!form.email && !isSubmitting;
       default: return true;
     }
   };
 
-  const handleSubmit = () => {
-    setSubmitted(true);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      await axios.post("/api/inquiries", {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        country: form.country,
+        subject: `Inquiry for ${form.tour}`,
+        inquiry_type: form.tour.toLowerCase().includes('kilimanjaro') ? 'kilimanjaro' : 'safari',
+        message: form.message || `Interested in ${form.tour}. Accommodation: ${form.accommodation}. Travelers: ${form.travelers}.`,
+        preferred_date: form.date,
+        guests: form.travelers,
+        accommodation: form.accommodation,
+      });
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error("Inquiry submission failed:", err);
+      setError(err.response?.data?.message || "Failed to send inquiry. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const reset = () => {
@@ -225,6 +252,9 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
                           <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-2"><MessageSquare className="w-3 h-3" /> Special requests</label>
                           <textarea rows={3} value={form.message} onChange={(e) => update("message", e.target.value)} placeholder="Tell us about your dream trip..." className="w-full px-4 py-3 rounded-xl bg-secondary/50 text-sm text-foreground outline-none focus:ring-2 focus:ring-accent resize-none transition-shadow" />
                         </div>
+                        {error && (
+                          <p className="text-xs text-red-500 mt-2 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{error}</p>
+                        )}
                       </div>
                     )}
                   </motion.div>
@@ -245,9 +275,16 @@ const InquiryModal = ({ isOpen, onClose, defaultTour }: InquiryModalProps) => {
                     Continue <ChevronRight className="w-4 h-4" />
                   </button>
                 ) : (
-                  <button onClick={handleSubmit} disabled={!canNext()}
-                    className="px-7 py-3 bg-accent text-accent-foreground rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-all">
-                    Submit Inquiry
+                  <button onClick={handleSubmit} disabled={!canNext() || isSubmitting}
+                    className="px-7 py-3 bg-accent text-accent-foreground rounded-full text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-all flex items-center gap-2">
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Submit Inquiry"
+                    )}
                   </button>
                 )}
               </div>

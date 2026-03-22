@@ -1,0 +1,48 @@
+import axios from 'axios';
+
+// Function to get cookie value by name
+function getCookie(name: string): string | null {
+    const match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+    return match ? decodeURIComponent(match[3]) : null;
+}
+
+const lib = axios.create({
+    baseURL: '', // Empty - Vite proxy handles routing
+    withCredentials: true,
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    },
+});
+
+// Add XSRF-TOKEN to every request
+lib.interceptors.request.use((config) => {
+    const xsrfToken = getCookie('XSRF-TOKEN');
+    if (xsrfToken) {
+        config.headers['X-XSRF-TOKEN'] = xsrfToken;
+    }
+    return config;
+});
+
+// Handle 401 errors - redirect to login if not already there
+lib.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            // Only redirect if not on login page and not making a login/user request
+            const isLoginPage = window.location.pathname === '/login';
+            const isLoginRequest = error.config?.url?.includes('/login');
+            
+            if (!isLoginPage && !isLoginRequest) {
+                // Clear any stale session data
+                document.cookie = 'laravel_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                window.location.href = '/login';
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default lib;
