@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="safari-container section-padding">
@@ -9,7 +11,7 @@ const Footer = () => {
           {/* Company */}
           <div>
             <h3 className="font-serif text-2xl mb-4">
-              Africa Safari<span className="text-accent"> & </span>Expeditions
+              Go Deep Africa<span className="text-accent"> Safari</span>
             </h3>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
               Your trusted partner for Kilimanjaro climbs, Tanzania safaris, and unforgettable African adventures since 2008.
@@ -95,7 +97,7 @@ const Footer = () => {
 
         <div className="mt-16 pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-primary-foreground/50">
-            © 2024 Africa Safari & Expeditions. All rights reserved.
+            © {currentYear} Go Deep Africa Safari. All rights reserved.
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-xs text-primary-foreground/50 hover:text-accent transition-colors">Privacy Policy</a>

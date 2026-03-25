@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowRight, Star, Shield, Users, Award, Mountain, Compass, Clock, ChevronRight, Binoculars, Tent, Quote, Play, MapPin } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Star, Shield, Users, Award, Mountain, Compass, Clock, ChevronRight, Binoculars, Tent, Quote, Play, MapPin, ChevronLeft } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import InquiryModal from "@/components/InquiryModal";
 import { ScrollReveal, StaggerContainer, StaggerItem, ParallaxImage } from "@/hooks/useScrollAnimation";
@@ -66,6 +66,32 @@ const Index = () => {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Hero Slider State
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const heroImages = [
+    "/beautiful-african-leopard-sitting-big-tree-trunk-middle-jungle.jpg",
+    "/beautiful-shot-african-wildebeest-grassy-plain_181624-18962.jpg",
+    "/beautiful-shot-three-zebras-crossing-road-safari-with-trees_181624-30309.jpg",
+    "/cute-massai-giraffe-tsavo-east-national-park-kenya-africa_181624-20860.jpg",
+    "/large (1).jpg",
+    "/large (2).jpg",
+    "/large (3).jpg",
+    "/large.jpg"
+  ];
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+  }, [heroImages.length]);
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 6000);
+    return () => clearInterval(timer);
+  }, [nextSlide]);
 
   useEffect(() => {
     fetchData();
@@ -98,24 +124,28 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* Video Hero — Centered text + buttons */}
-      <section className="relative h-screen min-h-[700px] -mt-24 overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster={getStorageUrl('/storage/hero/hero-safari.jpg')}
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-elephants-walking-in-the-savanna-42881-large.mp4" type="video/mp4" />
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-herd-of-zebras-running-in-the-savanna-42882-large.mp4" type="video/mp4" />
-          <source src={getStorageUrl('/storage/hero/hero-video.mp4')} type="video/mp4" />
-        </video>
-        <img src={getStorageUrl('/storage/hero/hero-safari.jpg')} alt="African savannah at golden hour" className="absolute inset-0 w-full h-full object-cover" style={{ zIndex: -1 }} />
-        <div className="hero-gradient-strong absolute inset-0" />
+      {/* Animated Slider Hero */}
+      <section className="relative h-screen min-h-[700px] -mt-24 overflow-hidden bg-slate-900">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute inset-0 w-full h-full"
+          >
+            <img 
+              src={heroImages[currentSlide]} 
+              alt="Go Deep Africa Safari" 
+              className="w-full h-full object-cover"
+            />
+            <div className="hero-gradient-strong absolute inset-0" />
+          </motion.div>
+        </AnimatePresence>
 
-        <div className="relative h-full flex flex-col items-center justify-center text-center safari-container">
+        {/* Hero Content Overlay */}
+        <div className="relative h-full flex flex-col items-center justify-center text-center safari-container z-10">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -126,20 +156,20 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: easeOutQuint, delay: 0.5 }}
-              className="badge-meta bg-accent/20 text-accent mx-auto mb-6"
+              className="badge-meta bg-accent/20 text-accent mx-auto mb-6 backdrop-blur-md border border-accent/20"
             >
               Tanzania's Premier Safari Company
             </motion.p>
-            <h1 className="text-hero font-serif text-primary-foreground mb-6">
-              The Wild<br />is Calling.
+            <h1 className="text-hero font-serif text-primary-foreground mb-6 drop-shadow-2xl">
+              Discover the Heart<br />of the Wild.
             </h1>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
-              className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-12 max-w-2xl mx-auto"
+              className="text-lg md:text-xl text-primary-foreground/90 leading-relaxed mb-12 max-w-2xl mx-auto drop-shadow-lg"
             >
-              Kilimanjaro climbs, wildlife safaris, and unforgettable adventures across Tanzania — crafted by local experts who call this land home.
+              Unforgettable Kilimanjaro climbs, high-end wildlife safaris, and custom Tanzanian adventures crafted by local experts.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -149,13 +179,13 @@ const Index = () => {
             >
               <button
                 onClick={() => setInquiryOpen(true)}
-                className="px-10 py-4 bg-accent text-accent-foreground rounded-full font-medium transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] text-sm tracking-wide uppercase"
+                className="px-10 py-4 bg-accent text-accent-foreground rounded-full font-bold transition-all hover:opacity-90 hover:scale-[1.05] active:scale-[0.98] text-sm tracking-widest uppercase shadow-xl shadow-accent/20"
               >
                 Plan Your Safari
               </button>
               <Link
                 to="/kilimanjaro"
-                className="px-10 py-4 bg-primary-foreground/10 text-primary-foreground backdrop-blur-sm rounded-full font-medium transition-all hover:bg-primary-foreground/20 border border-primary-foreground/20 text-sm tracking-wide uppercase"
+                className="px-10 py-4 bg-white/10 text-primary-foreground backdrop-blur-md rounded-full font-bold transition-all hover:bg-white/20 border border-white/20 text-sm tracking-widest uppercase shadow-xl"
               >
                 Climb Kilimanjaro
               </Link>
@@ -163,16 +193,46 @@ const Index = () => {
           </motion.div>
         </div>
 
+        {/* Slide Navigation Buttons */}
+        <div className="absolute inset-x-0 bottom-12 flex items-center justify-between px-6 md:px-12 z-20 pointer-events-none">
+          <button 
+            onClick={prevSlide}
+            className="p-3 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md border border-white/10 transition-all pointer-events-auto group"
+          >
+            <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+          </button>
+          
+          {/* Progress Indicators */}
+          <div className="flex gap-3 pointer-events-auto">
+            {heroImages.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-1.5 transition-all duration-500 rounded-full ${
+                  currentSlide === idx ? "w-8 bg-accent" : "w-2 bg-white/30 hover:bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+
+          <button 
+            onClick={nextSlide}
+            className="p-3 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md border border-white/10 transition-all pointer-events-auto group"
+          >
+            <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2"
         >
           <motion.div
-            animate={{ y: [0, 10, 0] }}
+            animate={{ y: [0, 8, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-px h-16 bg-gradient-to-b from-primary-foreground/50 to-transparent"
+            className="w-px h-12 bg-gradient-to-b from-accent to-transparent"
           />
         </motion.div>
       </section>
@@ -556,8 +616,8 @@ const Index = () => {
       {/* CTA */}
       <section className="relative py-36 overflow-hidden">
         <motion.img
-          src={getStorageUrl('/storage/hero/kili-summit.jpg')}
-          alt="Kilimanjaro summit at sunrise"
+          src="/beautiful-shot-african-wildebeest-grassy-plain_181624-18962.jpg"
+          alt="Wildebeest Great Migration"
           className="absolute inset-0 w-full h-full object-cover"
           initial={{ scale: 1.15 }}
           whileInView={{ scale: 1 }}

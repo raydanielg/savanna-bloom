@@ -18,6 +18,7 @@ import Register from "./pages/Register.tsx";
 import Packages from "./pages/Packages.tsx";
 import PackageDetail from "./pages/PackageDetail.tsx";
 // Admin Pages
+import BlogDetail from "./pages/BlogDetail.tsx";
 import AdminDashboard from "./pages/admin/Dashboard.tsx";
 import AdminSafaris from "./pages/admin/Safaris.tsx";
 import AdminBookings from "./pages/admin/Bookings.tsx";
@@ -39,6 +40,7 @@ import AdminGallery from "./pages/admin/Gallery.tsx";
 import AdminFaqs from "./pages/admin/Faqs.tsx";
 import AdminSettings from "./pages/admin/Settings.tsx";
 import AdminSafariDetails from "./pages/admin/SafariDetails.tsx";
+import AdminSafariForm from "./pages/admin/SafariForm.tsx";
 import AdminSafariCategories from "./pages/admin/SafariCategories.tsx";
 import AdminUserDetails from "./pages/admin/UserDetails.tsx";
 import AdminKilimanjaroRouteDetails from "./pages/admin/KilimanjaroRouteDetails.tsx";
@@ -75,7 +77,7 @@ const App = () => (
             <Route path="/packages/:slug" element={<PackageDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogDetail />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -84,9 +86,10 @@ const App = () => (
             {/* Admin Routes - Protected */}
             <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/safaris" element={<ProtectedRoute><AdminSafaris /></ProtectedRoute>} />
-            <Route path="/admin/safaris/create" element={<ProtectedRoute><AdminSafaris /></ProtectedRoute>} />
+            <Route path="/admin/safaris/:id" element={<ProtectedRoute><AdminSafariForm /></ProtectedRoute>} />
+            <Route path="/admin/safaris/create" element={<ProtectedRoute><AdminSafariForm /></ProtectedRoute>} />
             <Route path="/admin/safaris/categories" element={<ProtectedRoute><AdminSafariCategories /></ProtectedRoute>} />
-            <Route path="/admin/safaris/:id" element={<ProtectedRoute><AdminSafariDetails /></ProtectedRoute>} />
+            <Route path="/admin/safaris/view/:id" element={<ProtectedRoute><AdminSafariDetails /></ProtectedRoute>} />
             <Route path="/admin/destinations/:id" element={<ProtectedRoute><AdminDestinationForm /></ProtectedRoute>} />
             <Route path="/admin/destinations/create" element={<ProtectedRoute><AdminDestinationForm /></ProtectedRoute>} />
             <Route path="/admin/kilimanjaro-routes" element={<ProtectedRoute><AdminKilimanjaroRoutes /></ProtectedRoute>} />
