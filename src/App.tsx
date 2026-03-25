@@ -106,8 +106,8 @@ const App = () => (
             <Route path="/admin/bookings/:id/invoice" element={<ProtectedRoute><AdminBookingInvoice /></ProtectedRoute>} />
             <Route path="/admin/inquiries" element={<ProtectedRoute><AdminInquiries /></ProtectedRoute>} />
             <Route path="/admin/blog" element={<ProtectedRoute><AdminBlogPosts /></ProtectedRoute>} />
-            <Route path="/admin/blog/:id" element={<ProtectedRoute><AdminBlogPostForm /></ProtectedRoute>} />
             <Route path="/admin/blog/create" element={<ProtectedRoute><AdminBlogPostForm /></ProtectedRoute>} />
+            <Route path="/admin/blog/:id" element={<ProtectedRoute><AdminBlogPostForm /></ProtectedRoute>} />
             <Route path="/admin/testimonials" element={<ProtectedRoute><AdminTestimonials /></ProtectedRoute>} />
             <Route path="/admin/gallery" element={<ProtectedRoute><AdminGallery /></ProtectedRoute>} />
             <Route path="/admin/faqs" element={<ProtectedRoute><AdminFaqs /></ProtectedRoute>} />

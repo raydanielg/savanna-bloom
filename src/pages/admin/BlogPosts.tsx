@@ -46,6 +46,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { getStorageUrl } from "@/lib/storage";
 
 interface BlogPost {
   id: number;
@@ -215,7 +216,7 @@ export default function BlogPosts() {
           <h1 className="text-2xl font-bold text-gray-900">Blog Posts</h1>
           <p className="text-gray-500">Manage blog articles and stories</p>
         </div>
-        <Button className="bg-orange-600 hover:bg-orange-700" onClick={handleOpenCreate}>
+        <Button className="bg-orange-600 hover:bg-orange-700" onClick={() => navigate("/admin/blog/create")}>
           <Plus className="h-4 w-4 mr-2" />
           Write Article
         </Button>
@@ -323,7 +324,7 @@ export default function BlogPosts() {
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center overflow-hidden">
                           {post.featured_image ? (
-                            <img src={post.featured_image} alt={post.title} className="h-10 w-10 object-cover" />
+                            <img src={getStorageUrl(post.featured_image)} alt={post.title} className="h-10 w-10 object-cover" />
                           ) : (
                             <FileText className="h-5 w-5 text-purple-600" />
                           )}
@@ -371,7 +372,7 @@ export default function BlogPosts() {
                             <Eye className="h-4 w-4 mr-2" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOpenEdit(post)}>
+                          <DropdownMenuItem onClick={() => navigate(`/admin/blog/${post.id}`)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit
                           </DropdownMenuItem>

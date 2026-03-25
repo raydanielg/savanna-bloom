@@ -172,11 +172,40 @@ export default function AIChatBot() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500",
-            isOpen ? "bg-slate-800 text-white rotate-90" : "bg-orange-600 text-white"
+            "w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 overflow-hidden relative",
+            isOpen ? "bg-slate-800 text-white rotate-90" : "bg-white border-2 border-orange-600"
           )}
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Sparkles className="w-6 h-6" />}
+          {isOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <>
+              <motion.div
+                className="absolute inset-0 bg-orange-600/10"
+                animate={{ 
+                  opacity: [0.2, 0.5, 0.2],
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              />
+              <motion.img 
+                src="/favicon.ico" 
+                alt="Safari Guide"
+                className="w-10 h-10 object-contain relative z-10"
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              />
+            </>
+          )}
         </motion.button>
       </div>
     </div>

@@ -1,30 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/components/auth/ProtectedRoute";
 import AdminLayout from "@/components/layout/AdminLayout";
-import { getStorageUrl } from "@/lib/storage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Mountain, 
-  Plus, 
-  Search, 
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Trash2,
-  Filter,
-  Star,
-  Clock,
-  TrendingUp,
-  Save
-} from "lucide-react";
+import { Search, Plus, Filter, MoreHorizontal, Eye, Edit, Trash2, Mountain, Clock, TrendingUp, DollarSign } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,190 +20,60 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import ImageUpload from "@/components/ui/ImageUpload";
+import { Badge } from "@/components/ui/badge";
+import { getStorageUrl } from "@/lib/storage";
 
 interface KilimanjaroRoute {
   id: number;
   name: string;
-  slug: string;
-  short_description: string;
-  description: string;
   days: number;
   difficulty: string;
   price: number;
-  currency: string;
-  image: string;
   success_rate: number;
+  image: string;
   featured: boolean;
   active: boolean;
-  created_at: string;
 }
 
 export default function KilimanjaroRoutes() {
-  const { user } = useAuth();
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [routes, setRoutes] = useState<KilimanjaroRoute[]>([]);
-  
-  // Dialogs
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [editingRoute, setEditingRoute] = useState<KilimanjaroRoute | null>(null);
-  const [viewingRoute, setViewingRoute] = useState<KilimanjaroRoute | null>(null);
-  const [deletingRoute, setDeletingRoute] = useState<KilimanjaroRoute | null>(null);
-  
-  const [formData, setFormData] = useState({
-    name: "",
-    short_description: "",
-    description: "",
-    days: 5,
-    difficulty: "Moderate",
-    price: 0,
-    currency: "USD",
-    image: "",
-    success_rate: 90,
-    featured: false,
-    active: true,
-  });
   const navigate = useNavigate();
 
   useEffect(() => {
-    let isMounted = true;
-    const fetchData = async () => {
-      try {
-        const routesResponse = await axios.get("/api/kilimanjaro-routes");
-        if (isMounted) {
-          setRoutes(routesResponse.data || []);
-        }
-      } catch (error) {
-        console.error("Failed to fetch routes:", error);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-    
-    if (user) {
-      fetchData();
-    } else {
+    fetchData();
+  }, [navigate]);
+
+  const fetchData = async () => {
+    try {
+      const userResponse = await axios.get("/api/user");
+      setUser(userResponse.data);
+
+      const routesResponse = await axios.get("/api/kilimanjaro-routes");
+      setRoutes(routesResponse.data.data || routesResponse.data || []);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+      navigate("/login");
+    } finally {
       setLoading(false);
     }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [user]);
-
-  const handleOpenCreate = () => {
-    setEditingRoute(null);
-    setFormData({
-      name: "",
-      short_description: "",
-      description: "",
-      days: 5,
-      difficulty: "Moderate",
-      price: 0,
-      currency: "USD",
-      image: "",
-      success_rate: 90,
-      featured: false,
-      active: true,
-    });
-    setIsDialogOpen(true);
   };
 
-  const handleOpenEdit = (route: KilimanjaroRoute) => {
-    setEditingRoute(route);
-    setFormData({
-      name: route.name,
-      short_description: route.short_description || "",
-      description: route.description || "",
-      days: route.days || 5,
-      difficulty: route.difficulty || "Moderate",
-      price: route.price || 0,
-      currency: route.currency || "USD",
-      image: route.image || "",
-      success_rate: route.success_rate || 90,
-      featured: route.featured || false,
-      active: route.active ?? true,
-    });
-    setIsDialogOpen(true);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
+  const handleDelete = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this route?")) return;
     try {
-      if (editingRoute) {
-        const response = await axios.put(`/api/admin/kilimanjaro-routes/${editingRoute.id}`, formData);
-        setRoutes(routes.map(r => r.id === editingRoute.id ? response.data : r));
-      } else {
-        const response = await axios.post("/api/admin/kilimanjaro-routes", formData);
-        setRoutes([...routes, response.data]);
-      }
-      setIsDialogOpen(false);
-    } catch (error) {
-      console.error("Failed to save route:", error);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleView = (route: KilimanjaroRoute) => {
-    setViewingRoute(route);
-    setIsViewDialogOpen(true);
-  };
-
-  const handleDeleteClick = (route: KilimanjaroRoute) => {
-    setDeletingRoute(route);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deletingRoute) return;
-    try {
-      await axios.delete(`/api/admin/kilimanjaro-routes/${deletingRoute.id}`);
-      setRoutes(routes.filter(r => r.id !== deletingRoute.id));
-      setIsDeleteDialogOpen(false);
-      setDeletingRoute(null);
+      await axios.delete(`/api/admin/kilimanjaro-routes/${id}`);
+      setRoutes(routes.filter(r => r.id !== id));
     } catch (error) {
       console.error("Failed to delete route:", error);
     }
   };
 
   const filteredRoutes = routes.filter(route =>
-    route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    route.difficulty?.toLowerCase().includes(searchQuery.toLowerCase())
+    route.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const getDifficultyColor = (difficulty: string) => {
-    const colors: Record<string, string> = {
-      Easy: "bg-green-100 text-green-700",
-      Moderate: "bg-yellow-100 text-yellow-700",
-      Challenging: "bg-orange-100 text-orange-700",
-      Difficult: "bg-red-100 text-red-700",
-    };
-    return colors[difficulty] || "bg-gray-100 text-gray-600";
-  };
 
   if (loading) {
     return (
@@ -236,75 +87,17 @@ export default function KilimanjaroRoutes() {
 
   return (
     <AdminLayout user={user}>
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Kilimanjaro Routes</h1>
-          <p className="text-gray-500">Manage mountain climbing routes and packages</p>
+          <p className="text-gray-500">Manage climbing routes and itineraries</p>
         </div>
-        <Button className="bg-orange-600 hover:bg-orange-700" onClick={handleOpenCreate}>
+        <Button className="bg-orange-600 hover:bg-orange-700" onClick={() => navigate("/admin/kilimanjaro-routes/create")}>
           <Plus className="h-4 w-4 mr-2" />
           Add Route
         </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-50 rounded-lg">
-                <Mountain className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{routes.length}</p>
-                <p className="text-xs text-gray-500">Total Routes</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-50 rounded-lg">
-                <Mountain className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{routes.filter(r => r.active).length}</p>
-                <p className="text-xs text-gray-500">Active</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-50 rounded-lg">
-                <Star className="h-5 w-5 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{routes.filter(r => r.featured).length}</p>
-                <p className="text-xs text-gray-500">Featured</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-50 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{routes.length > 0 ? Math.round(routes.reduce((sum, r) => sum + (r.success_rate || 0), 0) / routes.length) : 0}%</p>
-                <p className="text-xs text-gray-500">Avg Success Rate</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Table */}
       <Card className="border-0 shadow-sm">
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -327,7 +120,7 @@ export default function KilimanjaroRoutes() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Route Name</TableHead>
+                <TableHead>Route</TableHead>
                 <TableHead>Duration</TableHead>
                 <TableHead>Difficulty</TableHead>
                 <TableHead>Price</TableHead>
@@ -348,41 +141,43 @@ export default function KilimanjaroRoutes() {
                   <TableRow key={route.id} className="hover:bg-gray-50">
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center overflow-hidden">
+                        <div className="h-10 w-10 rounded-lg bg-orange-100 flex items-center justify-center overflow-hidden">
                           {route.image ? (
                             <img src={getStorageUrl(route.image)} alt={route.name} className="h-10 w-10 object-cover" />
                           ) : (
-                            <Mountain className="h-5 w-5 text-blue-600" />
+                            <Mountain className="h-5 w-5 text-orange-600" />
                           )}
                         </div>
                         <div>
                           <p className="font-medium">{route.name}</p>
                           {route.featured && (
-                            <Badge className="bg-orange-100 text-orange-700 text-xs">Featured</Badge>
+                            <Badge className="bg-orange-100 text-orange-700 text-[10px] h-4">Featured</Badge>
                           )}
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-gray-500">
-                      <div className="flex items-center gap-1">
+                    <TableCell>
+                      <div className="flex items-center gap-1 text-gray-600">
                         <Clock className="h-4 w-4" />
                         {route.days} Days
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getDifficultyColor(route.difficulty)}>
+                      <Badge variant="outline" className="font-medium">
                         {route.difficulty}
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-medium">${route.price?.toLocaleString()}</TableCell>
+                    <TableCell className="font-semibold text-gray-900">
+                      ${route.price.toLocaleString()}
+                    </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <TrendingUp className="h-4 w-4 text-green-600" />
+                      <div className="flex items-center gap-1 text-green-600 font-medium">
+                        <TrendingUp className="h-4 w-4" />
                         {route.success_rate}%
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={route.active ? "default" : "secondary"} className={route.active ? "bg-green-100 text-green-700 hover:bg-green-100" : "bg-gray-100 text-gray-600 hover:bg-gray-100"}>
+                      <Badge variant={route.active ? "default" : "secondary"} className={route.active ? "bg-green-100 text-green-700 hover:bg-green-100" : ""}>
                         {route.active ? 'Active' : 'Inactive'}
                       </Badge>
                     </TableCell>
@@ -395,14 +190,10 @@ export default function KilimanjaroRoutes() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => navigate(`/admin/kilimanjaro-routes/${route.id}`)}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOpenEdit(route)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteClick(route)}>
+                          <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(route.id)}>
                             <Trash2 className="h-4 w-4 mr-2" />
                             Delete
                           </DropdownMenuItem>
@@ -416,143 +207,6 @@ export default function KilimanjaroRoutes() {
           </Table>
         </CardContent>
       </Card>
-
-      {/* Create/Edit Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editingRoute ? 'Edit Route' : 'Add New Route'}</DialogTitle>
-            <DialogDescription>
-              {editingRoute ? 'Update the route details below.' : 'Fill in the details to create a new climbing route.'}
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g., Machame Route"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="days">Duration (Days)</Label>
-                  <Input
-                    id="days"
-                    type="number"
-                    min="1"
-                    value={formData.days}
-                    onChange={(e) => setFormData({ ...formData, days: parseInt(e.target.value) })}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="difficulty">Difficulty</Label>
-                  <select
-                    id="difficulty"
-                    value={formData.difficulty}
-                    onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-md"
-                  >
-                    <option value="Easy">Easy</option>
-                    <option value="Moderate">Moderate</option>
-                    <option value="Challenging">Challenging</option>
-                    <option value="Difficult">Difficult</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="price">Price</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    min="0"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="success_rate">Success Rate (%)</Label>
-                  <Input
-                    id="success_rate"
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={formData.success_rate}
-                    onChange={(e) => setFormData({ ...formData, success_rate: parseInt(e.target.value) })}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Image</Label>
-                <ImageUpload
-                  value={formData.image}
-                  onChange={(url) => setFormData({ ...formData, image: url })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="short_description">Short Description</Label>
-                <Textarea
-                  id="short_description"
-                  value={formData.short_description}
-                  onChange={(e) => setFormData({ ...formData, short_description: e.target.value })}
-                  placeholder="Brief description for cards..."
-                  rows={2}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Full Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Detailed description..."
-                  rows={4}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="featured"
-                    checked={formData.featured}
-                    onCheckedChange={(checked) => setFormData({ ...formData, featured: checked })}
-                  />
-                  <Label htmlFor="featured">Featured</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="active"
-                    checked={formData.active}
-                    onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
-                  />
-                  <Label htmlFor="active">Active</Label>
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" className="bg-orange-600 hover:bg-orange-700" disabled={saving}>
-                <Save className="h-4 w-4 mr-2" />
-                {saving ? 'Saving...' : (editingRoute ? 'Update' : 'Create')} Route
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* View Dialog */}
-      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl">{viewingRoute?.name}</DialogTitle>
-            <DialogDescription>{viewingRoute?.short_description}</DialogDescription>
-          </DialogHeader>
           
           {viewingRoute && (
             <div className="space-y-4">
