@@ -2,6 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
+import Image from '@tiptap/extension-image';
 import { 
   Bold, 
   Italic, 
@@ -43,6 +44,13 @@ const MenuBar = ({ editor }: { editor: any }) => {
     }
   };
 
+  const addImage = () => {
+    const url = window.prompt('Enter image URL');
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  };
+
   return (
     <div className="relative group">
       {/* Floating Side Tools (Tripoto Style) */}
@@ -66,6 +74,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
               type="button"
               variant="outline"
               size="icon"
+              onClick={addImage}
               className="rounded-full bg-white shadow-sm hover:border-orange-500 hover:text-orange-500"
               title="Add Image"
             >
@@ -202,6 +211,12 @@ export default function RichTextEditor({ value, onChange, placeholder, className
       Underline,
       Link.configure({
         openOnClick: false,
+      }),
+      Image.configure({
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'rounded-lg max-w-full h-auto shadow-md my-4 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all',
+        },
       }),
     ],
     content: value,

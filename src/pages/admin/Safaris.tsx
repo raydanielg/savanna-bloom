@@ -14,7 +14,8 @@ import {
   Eye,
   Edit,
   Trash2,
-  Filter
+  Filter,
+  MapPin
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -31,6 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { getStorageUrl } from "@/lib/storage";
 
 interface Safari {
   id: number;
@@ -197,10 +199,26 @@ export default function Safaris() {
                 <TableRow key={safari.id} className="hover:bg-gray-50">
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                        <Map className="h-5 w-5 text-orange-600" />
+                      <div className="h-10 w-10 rounded-lg bg-orange-100 flex items-center justify-center overflow-hidden">
+                        {safari.image ? (
+                          <img 
+                            src={getStorageUrl(safari.image)} 
+                            alt={safari.name} 
+                            className="h-10 w-10 object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1516426123300-d2e6f4a6e6d1?w=100';
+                            }}
+                          />
+                        ) : (
+                          <Map className="h-5 w-5 text-orange-600" />
+                        )}
                       </div>
-                      <span className="font-medium">{safari.name}</span>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{safari.name}</span>
+                        <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                          <MapPin className="h-3 w-3" /> {safari.destination?.name || 'No destination'}
+                        </span>
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell className="text-gray-500">{safari.category}</TableCell>

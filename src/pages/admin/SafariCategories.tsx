@@ -19,7 +19,7 @@ export default function SafariCategories() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [saving, setSaving] = useState(false);
@@ -33,7 +33,7 @@ export default function SafariCategories() {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/api/safaris/categories");
+      const response = await axios.get("/api/admin/safari-categories");
       setCategories(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
@@ -47,9 +47,9 @@ export default function SafariCategories() {
     }
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (!newCategory.trim()) return;
-    if (categories.includes(newCategory.trim())) {
+    if (categories.some(cat => cat.name.toLowerCase() === newCategory.trim().toLowerCase())) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -58,18 +58,48 @@ export default function SafariCategories() {
       return;
     }
     
-    // In a real app, you might POST to an endpoint. 
-    // Here we update local state since categories are often derived from Safari model.
-    setCategories([...categories, newCategory.trim()]);
-    setNewCategory("");
-    toast({
-      title: "Success",
-      description: "Category added to local list. Assign it to a safari to save it permanently.",
-    });
+    setSaving(true);
+    try {
+      const response = await axios.post("/api/admin/safari-categories", {
+        name: newCategory.trim()
+      });
+      setCategories([...categories, response.data]);
+      setNewCategory("");
+      toast({
+        title: "Success",
+        description: "Category saved successfully",
+      });
+    } catch (error) {
+      console.error("Failed to save category:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to save category to database",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteCategory = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this category?")) return;
+
+    try {
+      await axios.delete(`/api/admin/safari-categories/${id}`);
+      setCategories(categories.filter(c => c.id !== id));
+      toast({ title: "Removed", description: "Category deleted successfully" });
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete category",
+      });
+    }
   };
 
   const filteredCategories = categories.filter(cat =>
-    cat.toLowerCase().includes(searchQuery.toLowerCase())
+    cat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) {
@@ -119,9 +149,10 @@ export default function SafariCategories() {
                 />
                 <Button 
                   onClick={handleAddCategory}
+                  disabled={saving || !newCategory.trim()}
                   className="h-12 px-6 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-lg shadow-orange-200"
                 >
-                  Add
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add"}
                 </Button>
               </div>
             </CardContent>
@@ -155,16 +186,13 @@ export default function SafariCategories() {
                         <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center">
                           <Tag className="h-4 w-4 text-orange-600" />
                         </div>
-                        <span className="font-semibold text-slate-700">{cat}</span>
+                        <span className="font-semibold text-slate-700">{cat.name}</span>
                       </div>
                       <Button 
                         variant="ghost" 
                         size="sm" 
                         className="text-slate-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all"
-                        onClick={() => {
-                          setCategories(categories.filter(c => c !== cat));
-                          toast({ title: "Removed", description: "Category removed from local list" });
-                        }}
+                        onClick={() => handleDeleteCategory(cat.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

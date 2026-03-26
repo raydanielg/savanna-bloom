@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\UploadController;
+use App\Http\Controllers\Api\SafariCategoryController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SafariController;
@@ -68,6 +70,12 @@ Route::post('/inquiries', [InquiryController::class, 'store']);
 Route::middleware(['auth:sanctum'])->group(function () {
     // Users
     Route::apiResource('admin/users', UserController::class);
+
+    // Image Upload
+    Route::post('admin/upload', [UploadController::class, 'upload']);
+
+    // Safari Categories
+    Route::apiResource('admin/safari-categories', SafariCategoryController::class);
     
     // Admin CRUD routes
     Route::apiResource('admin/destinations', DestinationController::class)->except(['index', 'show']);

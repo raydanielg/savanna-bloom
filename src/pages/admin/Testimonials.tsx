@@ -36,6 +36,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { getStorageUrl } from "@/lib/storage";
+import ImageUpload from "@/components/ui/ImageUpload";
 import {
   Dialog,
   DialogContent,
@@ -87,8 +89,9 @@ export default function Testimonials() {
       setUser(userResponse.data);
 
       const testimonialsResponse = await axios.get("/api/testimonials");
-      setTestimonials(testimonialsResponse.data || []);
+      setTestimonials(Array.isArray(testimonialsResponse.data) ? testimonialsResponse.data : (testimonialsResponse.data?.data || []));
     } catch (error) {
+      console.error("Failed to fetch data:", error);
       navigate("/login");
     } finally {
       setLoading(false);
@@ -130,10 +133,10 @@ export default function Testimonials() {
     try {
       if (editingTestimonial) {
         const response = await axios.put(`/api/admin/testimonials/${editingTestimonial.id}`, formData);
-        setTestimonials(testimonials.map(t => t.id === editingTestimonial.id ? response.data : t));
+        setTestimonials(testimonials.map(t => t.id === editingTestimonial.id ? (response.data?.data || response.data) : t));
       } else {
         const response = await axios.post("/api/admin/testimonials", formData);
-        setTestimonials([...testimonials, response.data]);
+        setTestimonials([...testimonials, (response.data?.data || response.data)]);
       }
       setIsDialogOpen(false);
     } catch (error) {
@@ -313,7 +316,14 @@ export default function Testimonials() {
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-medium overflow-hidden">
                           {testimonial.avatar ? (
-                            <img src={testimonial.avatar} alt={testimonial.name} className="h-10 w-10 object-cover" />
+                            <img 
+                              src={getStorageUrl(testimonial.avatar)} 
+                              alt={testimonial.name} 
+                              className="h-10 w-10 object-cover" 
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=random`;
+                              }}
+                            />
                           ) : (
                             testimonial.name.split(" ").map(n => n[0]).join("").slice(0, 2)
                           )}
@@ -321,7 +331,7 @@ export default function Testimonials() {
                         <div>
                           <p className="font-medium">{testimonial.name}</p>
                           {testimonial.featured && (
-                            <Badge className="bg-orange-100 text-orange-700 text-xs">Featured</Badge>
+                            <Badge className="bg-orange-100 text-orange-700 text-[10px] h-4">Featured</Badge>
                           )}
                         </div>
                       </div>
@@ -438,12 +448,10 @@ export default function Testimonials() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="avatar">Avatar URL</Label>
-                <Input
-                  id="avatar"
+                <Label htmlFor="avatar">Customer Photo</Label>
+                <ImageUpload
                   value={formData.avatar}
-                  onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
-                  placeholder="https://example.com/avatar.jpg"
+                  onChange={(url) => setFormData({ ...formData, avatar: url })}
                 />
               </div>
               <div className="space-y-2">

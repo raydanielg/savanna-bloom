@@ -78,10 +78,12 @@ export default function Users() {
       const userResponse = await axios.get("/api/user");
       setUser(userResponse.data);
 
-      // For now, show current user since we don't have a users list endpoint
-      setUsers([userResponse.data]);
+      const usersResponse = await axios.get("/api/admin/users");
+      setUsers(Array.isArray(usersResponse.data) ? usersResponse.data : (usersResponse.data?.data || []));
     } catch (error) {
-      navigate("/login");
+      console.error("Failed to fetch users:", error);
+      // Fallback to current user if admin list fails
+      if (user) setUsers([user]);
     } finally {
       setLoading(false);
     }
@@ -113,19 +115,25 @@ export default function Users() {
     e.preventDefault();
     try {
       if (editingUser) {
-        const updateData: any = {
-          name: formData.name,
-          email: formData.email,
-          role: formData.role,
-        };
-        if (formData.password) {
-          updateData.password = formData.password;
-        }
-        setUsers(users.map(u => u.id === editingUser.id ? { ...u, ...updateData } : u));
+        const response = await axios.put(`/api/admin/users/${editingUser.id}`, formData);
+        setUsers(users.map(u => u.id === editingUser.id ? response.data : u));
+      } else {
+        const response = await axios.post("/api/admin/users", formData);
+        setUsers([...users, response.data]);
       }
       setIsDialogOpen(false);
     } catch (error) {
       console.error("Failed to save user:", error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+    try {
+      await axios.delete(`/api/admin/users/${id}`);
+      setUsers(users.filter(u => u.id !== id));
+    } catch (error) {
+      console.error("Failed to delete user:", error);
     }
   };
 

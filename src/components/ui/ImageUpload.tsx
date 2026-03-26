@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import axios from "@/lib/axios";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +16,7 @@ interface ImageUploadProps {
 }
 
 export default function ImageUpload({ value, onChange, label, className }: ImageUploadProps) {
+  const { toast } = useToast();
   const [mode, setMode] = useState<'upload' | 'url'>('url');
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(value);
@@ -41,27 +44,31 @@ export default function ImageUpload({ value, onChange, label, className }: Image
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+      // Using the dedicated admin upload endpoint
+      const response = await axios.post('/api/admin/upload', formData, {
         headers: {
-          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        onChange(data.url);
-        setPreview(data.url);
-      } else {
-        // For demo, use the local preview URL
-        const localUrl = URL.createObjectURL(file);
-        onChange(localUrl);
+      if (response.data && response.data.url) {
+        onChange(response.data.url);
+        setPreview(response.data.url);
+        toast({
+          title: "Success",
+          description: "Image uploaded successfully",
+        });
       }
-    } catch (error) {
-      // For demo purposes, use a placeholder or the file's local URL
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: error.response?.data?.message || "Failed to upload image to server",
+      });
+      // Fallback to local preview for UX, but it won't persist correctly
       const localUrl = URL.createObjectURL(file);
-      onChange(localUrl);
+      setPreview(localUrl);
     } finally {
       setUploading(false);
     }
@@ -152,10 +159,11 @@ export default function ImageUpload({ value, onChange, label, className }: Image
             className="h-32 w-auto rounded-lg border object-cover min-w-[100px] bg-slate-50"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              if (preview.startsWith('http')) {
-                target.src = preview; // Fallback to raw URL if storage URL fails
-              } else {
-                target.src = 'https://via.placeholder.com/200x150?text=Invalid+Image';
+              if (preview && !preview.startsWith('http') && !preview.startsWith('data:')) {
+                // If the storage URL failed and it's a relative path, try prepending storage/ if not present
+                if (!preview.startsWith('storage/')) {
+                  target.src = getStorageUrl(`storage/${preview}`);
+                }
               }
             }}
           />

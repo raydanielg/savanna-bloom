@@ -47,6 +47,7 @@ import AdminKilimanjaroRouteDetails from "./pages/admin/KilimanjaroRouteDetails.
 import AdminDestinationForm from "./pages/admin/DestinationForm.tsx";
 import AdminKilimanjaroRouteForm from "./pages/admin/KilimanjaroRouteForm.tsx";
 import AdminBlogPostForm from "./pages/admin/BlogPostForm.tsx";
+import DestinationDetail from "./pages/DestinationDetail.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Maintenance from "./pages/Maintenance.tsx";
 // Auth
@@ -71,7 +72,7 @@ const App = () => (
             <Route path="/tanzania-safaris" element={<TanzaniaSafaris />} />
             <Route path="/safari/:slug" element={<SafariDetail />} />
             <Route path="/destinations" element={<Destinations />} />
-            <Route path="/destination/:slug" element={<Destinations />} />
+            <Route path="/destination/:slug" element={<DestinationDetail />} />
             <Route path="/day-trips" element={<DayTrips />} />
             <Route path="/packages" element={<Packages />} />
             <Route path="/packages/:slug" element={<PackageDetail />} />

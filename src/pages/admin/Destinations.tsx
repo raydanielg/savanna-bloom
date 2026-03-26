@@ -333,7 +333,14 @@ export default function Destinations() {
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center overflow-hidden">
                           {destination.image ? (
-                            <img src={getStorageUrl(destination.image)} alt={destination.name} className="h-10 w-10 object-cover" />
+                            <img 
+                              src={getStorageUrl(destination.image)} 
+                              alt={destination.name} 
+                              className="h-10 w-10 object-cover" 
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1449156001931-828320445f14?w=100';
+                              }}
+                            />
                           ) : (
                             <Globe className="h-5 w-5 text-blue-600" />
                           )}

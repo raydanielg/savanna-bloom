@@ -69,6 +69,9 @@ export default function KilimanjaroRouteForm() {
     success_rate: 95,
     featured: false,
     active: true,
+    highlights: [],
+    included: [],
+    excluded: [],
     itinerary: [],
     seo_title: "",
     seo_description: "",
@@ -88,6 +91,9 @@ export default function KilimanjaroRouteForm() {
       const data = response.data.data || response.data;
       setFormData({
         ...data,
+        highlights: Array.isArray(data.highlights) ? data.highlights : [],
+        included: Array.isArray(data.included) ? data.included : [],
+        excluded: Array.isArray(data.excluded) ? data.excluded : [],
         itinerary: Array.isArray(data.itinerary) ? data.itinerary : [],
       });
     } catch (error) {
@@ -158,6 +164,38 @@ export default function KilimanjaroRouteForm() {
         d.id === did ? { ...d, [field]: value } : d
       )
     });
+  };
+
+  const addInclusion = () => {
+    setFormData({ ...formData, included: [...(formData.included || []), ""] });
+  };
+
+  const removeInclusion = (index: number) => {
+    const newIncluded = [...formData.included];
+    newIncluded.splice(index, 1);
+    setFormData({ ...formData, included: newIncluded });
+  };
+
+  const updateInclusion = (index: number, value: string) => {
+    const newIncluded = [...formData.included];
+    newIncluded[index] = value;
+    setFormData({ ...formData, included: newIncluded });
+  };
+
+  const addExclusion = () => {
+    setFormData({ ...formData, excluded: [...(formData.excluded || []), ""] });
+  };
+
+  const removeExclusion = (index: number) => {
+    const newExcluded = [...formData.excluded];
+    newExcluded.splice(index, 1);
+    setFormData({ ...formData, excluded: newExcluded });
+  };
+
+  const updateExclusion = (index: number, value: string) => {
+    const newExcluded = [...formData.excluded];
+    newExcluded[index] = value;
+    setFormData({ ...formData, excluded: newExcluded });
   };
 
   const onDragEnd = (result: any) => {
@@ -286,7 +324,7 @@ export default function KilimanjaroRouteForm() {
                   </CardContent>
                 </Card>
 
-                {/* Itinerary with Drag and Drop */}
+                {/* Daily Itinerary */}
                 <Card className="border-0 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden bg-white">
                   <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
                     <div className="flex items-center justify-between">
@@ -393,6 +431,71 @@ export default function KilimanjaroRouteForm() {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Inclusions & Exclusions */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <Card className="border-0 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden bg-white">
+                    <CardHeader className="bg-emerald-50/50 border-b border-emerald-100 p-8">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-xl font-serif flex items-center gap-3 text-emerald-900">
+                          <Plus className="h-5 w-5 text-emerald-500" /> What's Included
+                        </CardTitle>
+                        <Button type="button" variant="outline" size="sm" onClick={addInclusion} className="rounded-full bg-white shadow-sm border-emerald-200 font-bold px-4 h-8 text-xs">
+                          <Plus className="h-3 w-3 mr-1" /> Add
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-8 space-y-4">
+                      {formData.included?.map((item: string, idx: number) => (
+                        <div key={idx} className="flex gap-2">
+                          <Input
+                            value={item}
+                            onChange={(e) => updateInclusion(idx, e.target.value)}
+                            placeholder="e.g., Professional mountain guides"
+                            className="h-10 bg-emerald-50/30 border-emerald-100 rounded-xl focus:ring-emerald-500/20"
+                          />
+                          <Button type="button" variant="ghost" size="icon" onClick={() => removeInclusion(idx)} className="text-emerald-300 hover:text-rose-600 h-10 w-10">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      {(!formData.included || formData.included.length === 0) && (
+                        <p className="text-center py-4 text-slate-400 italic text-sm">No inclusions added yet.</p>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden bg-white">
+                    <CardHeader className="bg-rose-50/50 border-b border-rose-100 p-8">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-xl font-serif flex items-center gap-3 text-rose-900">
+                          <Plus className="h-5 w-5 text-rose-500" /> What's Excluded
+                        </CardTitle>
+                        <Button type="button" variant="outline" size="sm" onClick={addExclusion} className="rounded-full bg-white shadow-sm border-rose-200 font-bold px-4 h-8 text-xs">
+                          <Plus className="h-3 w-3 mr-1" /> Add
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-8 space-y-4">
+                      {formData.excluded?.map((item: string, idx: number) => (
+                        <div key={idx} className="flex gap-2">
+                          <Input
+                            value={item}
+                            onChange={(e) => updateExclusion(idx, e.target.value)}
+                            placeholder="e.g., Personal gear and equipment"
+                            className="h-10 bg-rose-50/30 border-rose-100 rounded-xl focus:ring-rose-500/20"
+                          />
+                          <Button type="button" variant="ghost" size="icon" onClick={() => removeExclusion(idx)} className="text-rose-300 hover:text-rose-600 h-10 w-10">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      {(!formData.excluded || formData.excluded.length === 0) && (
+                        <p className="text-center py-4 text-slate-400 italic text-sm">No exclusions added yet.</p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             ) : (
               /* Premium Live Preview (Matches KilimanjaroRoute Detail) */

@@ -21,6 +21,7 @@ class KilimanjaroRoute extends Model
         'highlights' => 'array',
         'included' => 'array',
         'excluded' => 'array',
+        'itinerary' => 'array',
         'featured' => 'boolean',
         'active' => 'boolean',
         'price' => 'decimal:2',
